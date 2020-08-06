@@ -1,4 +1,5 @@
 <?php
+Yii::import('libs.crypt.crypt');
 
 class TokensController extends Controller
 {

@@ -1,4 +1,5 @@
 <?php
+Yii::import('libs.crypt.crypt');
 
 class TransactionsController extends Controller
 {

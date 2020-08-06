@@ -1,4 +1,6 @@
 <?php
+Yii::import('libs.crypt.crypt');
+
 class SiteController extends Controller
 {
 	public function init()

@@ -1,4 +1,7 @@
 <?php
+Yii::import('libs.Utils.Utils');
+Yii::import('libs.crypt.crypt');
+
 $http_host = $_SERVER['HTTP_HOST'];
 
 $walletUrl = 'https://wallet.' . Utils::get_domain($http_host) . '/index.php?r=wallet/index';

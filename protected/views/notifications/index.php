@@ -1,5 +1,7 @@
 <div class="form">
 <?php
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.WebApp');
 $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'notifications-form',
 	// Please note: When you enable ajax validation, make sure the corresponding

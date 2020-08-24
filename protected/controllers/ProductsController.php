@@ -1,4 +1,6 @@
 <?php
+Yii::import('libs.crypt.crypt');
+Yii::import('libs.NaPacks.Logo');
 
 class ProductsController extends Controller
 {
@@ -135,7 +137,7 @@ class ProductsController extends Controller
 
 					$path = Yii::app()->basePath . '/../custom/products/shop-' . crypt::Decrypt($id_shop) . "/" . $_FILES['Products']['name']['filename'];
 					if (gethostname() == 'blockchain1'){
-						$host = 'https://napay.napoliblockchain.tk';
+						$host = 'https://napay.blockchain-napoli.tk';
 					}elseif (gethostname()=='CGF6135T' || gethostname()=='NUNZIA'){ // SERVE PER LE PROVE IN UFFICIO
 						$host = 'https://'.$_SERVER['HTTP_HOST'].'/napay';
 					}else{
@@ -200,7 +202,7 @@ class ProductsController extends Controller
 					// $model->filename = basename($path);
 					$path = Yii::app()->basePath . '/../custom/products/shop-' . $model->id_shop . "/" . $_FILES['Products']['name']['filename'];
 					if (gethostname() == 'blockchain1'){
-						$host = 'https://napay.napoliblockchain.tk';
+						$host = 'https://napay.blockchain-napoli.tk';
 					}elseif (gethostname()=='CGF6135T' || gethostname()=='NUNZIA'){ // SERVE PER LE PROVE IN UFFICIO
 						$host = 'https://'.$_SERVER['HTTP_HOST'].'/napay';
 					}else{
@@ -218,16 +220,16 @@ class ProductsController extends Controller
 			if ($model->validate() && $model->save()) {
 				//se non esiste la cartella dell'utente viene creata
 				if (!file_exists(Yii::app()->basePath . '/../custom/products/shop-' . $model->id_shop . "/")) {
-				    mkdir(Yii::app()->basePath . '/../custom/products/shop-' . $model->id_shop . "/", 0755, true);
+				  mkdir(Yii::app()->basePath . '/../custom/products/shop-' . $model->id_shop . "/", 0755, true);
 				}
-	            move_uploaded_file($_FILES['Products']['tmp_name']['filename'], $path);
+	      move_uploaded_file($_FILES['Products']['tmp_name']['filename'], $path);
 
 				// genero il nuovo template con il nuovo prodotto modificato
-				$this->generateTemplate(crypt::Decrypt($id_shop));
+				$this->generateTemplate($model->id_shop);
 
-	            // redirect to success page
+	      // redirect to success page
 				$this->redirect(array('shops/view','id'=>crypt::Encrypt($model->id_shop)));
-	        }
+	    }
 		}
 
 		$this->render('update',array(

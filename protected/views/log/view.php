@@ -19,6 +19,11 @@ $viewName = 'Log';
 								'attributes'=>array(
 									'id_log',
 									'timestamp',
+									array(
+										'label'=>Yii::t('model','timestamp'),
+										'type'=>'raw',
+										'value'=>WebApp::dateLN($model->timestamp),
+									),
 									'id_user',
 									'app',
 									'controller',

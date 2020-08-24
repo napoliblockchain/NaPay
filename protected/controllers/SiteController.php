@@ -1,5 +1,6 @@
 <?php
 Yii::import('libs.crypt.crypt');
+Yii::import('libs.NaPacks.Settings');
 
 class SiteController extends Controller
 {

@@ -1,4 +1,6 @@
 <?php
+Yii::import('libs.crypt.crypt');
+Yii::import('libs.NaPacks.Logo');
 
 class CaricheController extends Controller
 {

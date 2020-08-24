@@ -1,4 +1,11 @@
 <?php
+Yii::import('libs.crypt.crypt');
+Yii::import('libs.Utils.Utils');
+Yii::import('libs.NaPacks.Settings');
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.WebApp');
+Yii::import('libs.NaPacks.SaveModels');
+Yii::import('libs.NaPacks.Save');
 
 class PosController extends Controller
 {
@@ -309,7 +316,7 @@ class PosController extends Controller
  		*	AUTOLOADER GATEWAYS
  		*/
  		// $btcpay = Yii::app()->basePath . '/extensions/gateways/btcpayserver/Btcpay/Autoloader.php';
-		$btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver/Btcpay/Autoloader.php';
+		$btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver-php-v1/Btcpay/Autoloader.php';
  		if (true === file_exists($btcpay) && true === is_readable($btcpay)){
  		    require_once $btcpay;
  		    \Btcpay\Autoloader::register();

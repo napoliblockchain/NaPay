@@ -1,4 +1,10 @@
 <?php
+Yii::import('libs.crypt.crypt');
+Yii::import('libs.NaPacks.Settings');
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.WebApp');
+Yii::import('libs.NaPacks.SaveModels');
+Yii::import('libs.NaPacks.Save');
 
 class StoresController extends Controller
 {
@@ -824,7 +830,10 @@ class StoresController extends Controller
 	 * Questa funzione recupera la lista delle tabelle in checkout
 	*/
 	public function getDefaultsCheckout($id_store){
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$stores = Stores::model()->findByPk($id_store);
 		$merchants = Merchants::model()->findByPk($stores->id_merchant);

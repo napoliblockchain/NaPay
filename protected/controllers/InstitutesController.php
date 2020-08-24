@@ -1,4 +1,6 @@
 <?php
+Yii::import('libs.crypt.crypt');
+Yii::import('libs.NaPacks.Logo');
 
 class InstitutesController extends Controller
 {
@@ -123,7 +125,7 @@ class InstitutesController extends Controller
 							echo "Impossibile creare account commerciante!";
 							exit;
 						}
-						
+
 						$timestamp = time();
 
 						//Salvo i timestamp dei consensi al trattamento dei dati e statuto

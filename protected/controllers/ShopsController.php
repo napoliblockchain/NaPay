@@ -1,4 +1,10 @@
 <?php
+Yii::import('libs.crypt.crypt');
+Yii::import('libs.NaPacks.Settings');
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.WebApp');
+Yii::import('libs.NaPacks.SaveModels');
+Yii::import('libs.NaPacks.Save');
 
 class ShopsController extends Controller
 {
@@ -324,7 +330,7 @@ class ShopsController extends Controller
 			// <!-- Hidden fields -->
 			// per distinguere test da produzione...
 			if (gethostname() == 'blockchain1'){
-				$URLIpn = 'https://napay.napoliblockchain.tk'.Yii::app()->createUrl('ipn/shop',array('id_shop'=>$shop->id_shop));
+				$URLIpn = 'https://napay.blockchain-napoli.tk'.Yii::app()->createUrl('ipn/shop',array('id_shop'=>$shop->id_shop));
 			}elseif (gethostname()=='CGF6135T' || gethostname()=='NUNZIA'){ // SERVE PER LE PROVE IN UFFICIO
 				$URLIpn = 'https://'.$_SERVER['HTTP_HOST'].Yii::app()->createUrl('ipn/shop',array('id_shop'=>$shop->id_shop));
 			}else{

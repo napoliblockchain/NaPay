@@ -23,6 +23,7 @@ return array (
   '<p>Your new seed is:</p><p class=\'alert alert-danger\'><strong>{seed}</strong></p>' => '<p>Il tuo nuovo seed è:</p><p class=\'alert alert-danger\'><strong>{seed}</strong></p>',
   'Amount is higher than Balance.' => 'Importo maggiore del Conto.',
   'Checking...' => 'Controllando...',
+  'Reloading page...' => 'Ricaricando...',
   'Confirm' => 'Conferma',
   'Disable' => 'Disabilita',
   'Enable' => 'Abilita',

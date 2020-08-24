@@ -1,5 +1,14 @@
 <?php
-require_once Yii::app()->params['libsPath'] . '/web-push-php/vendor/autoload.php';
+Yii::import('libs.crypt.crypt');
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.Settings');
+Yii::import('libs.NaPacks.Notifi');
+Yii::import('libs.NaPacks.Push');
+Yii::import('libs.NaPacks.SaveModels');
+Yii::import('libs.NaPacks.Save');
+Yii::import('libs.NaPacks.WebApp');
+
+
 use Minishlink\WebPush\WebPush;
 use Minishlink\WebPush\Subscription;
 
@@ -188,7 +197,7 @@ class IpnController extends Controller
 		*	AUTOLOADER GATEWAYS
 		*/
 		// $btcpay = Yii::app()->basePath . '/extensions/gateways/btcpayserver/Btcpay/Autoloader.php';
-        $btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver/Btcpay/Autoloader.php';
+    $btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver-php-v1/Btcpay/Autoloader.php';
 		if (true === file_exists($btcpay) &&
 		    true === is_readable($btcpay))
 		{
@@ -207,22 +216,24 @@ class IpnController extends Controller
 		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage('mc156MdhshuUYTF5365');
 		if (file_exists ($folder.$pairings->sin.'.pri')){
 			$privateKey    = $storageEngine->load($folder.$pairings->sin.'.pri');
-            $save->WriteLog('napay','ipn','shop','Private key loaded.');
+      $save->WriteLog('napay','ipn','shop','Private key loaded.');
 		}else{
-            $save->WriteLog('napay','ipn','shop','Error. The requested Private key does not exist.',true);
+      $save->WriteLog('napay','ipn','shop','Error. The requested Private key does not exist.',true);
 
 		}
 		if (file_exists ($folder.$pairings->sin.'.pub')){
 			$publicKey     = $storageEngine->load($folder.$pairings->sin.'.pub');
-            $save->WriteLog('napay','ipn','shop','Public key loaded.');
+      $save->WriteLog('napay','ipn','shop','Public key loaded.');
 		}else{
-            $save->WriteLog('napay','ipn','shop','Error. The requested Public key does not exist.',true);
+      $save->WriteLog('napay','ipn','shop','Error. The requested Public key does not exist.',true);
 		}
 
-        // carico l'estensione
-        require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+    // carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
-        // Effettuo il login senza dati
+    // Effettuo il login senza dati
 		$BTCPay = new BTCPay(null,null);
 		// imposto l'url
 		$merchants = Merchants::model()->findByPk($transaction->id_merchant);
@@ -362,7 +373,7 @@ class IpnController extends Controller
 		/**
 		*	AUTOLOADER GATEWAYS
 		*/
-        $btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver/Btcpay/Autoloader.php';
+        $btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver-php-v1/Btcpay/Autoloader.php';
 		if (true === file_exists($btcpay) &&
 		    true === is_readable($btcpay))
 		{
@@ -841,7 +852,7 @@ class IpnController extends Controller
 		/**
 		*	AUTOLOADER GATEWAYS
 		*/
-    $btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver/Btcpay/Autoloader.php';
+    $btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver-php-v1/Btcpay/Autoloader.php';
 		if (true === file_exists($btcpay) &&
 		    true === is_readable($btcpay))
 		{

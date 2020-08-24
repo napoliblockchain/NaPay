@@ -533,7 +533,9 @@ class BackendController extends Controller
 	private function checkBtcpayserverInvoice($item)
 	{
 		// carico l'estensione
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		// Effettuo il login senza dati
 		$BTCPay = new BTCPay(null,null);

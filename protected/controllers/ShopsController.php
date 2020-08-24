@@ -188,8 +188,10 @@ class ShopsController extends Controller
 		// cancello anche tutti gli shopsettings
 		SettingsShops::model()->deleteAllByAttributes(['id_shop'=>crypt::Decrypt($id)]);
 
-		// elimino lo shop da btcpayserver
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$merchants = Merchants::model()->findByPk($model->id_merchant);
 		$BpsUsers = BpsUsers::model()->findByAttributes(array('id_merchant'=>$model->id_merchant));
@@ -204,6 +206,7 @@ class ShopsController extends Controller
 		// Imposto lo shopId prima di chiamare la funzione
 		$BTCPay->setShopId($model->bps_shopid);
 
+		// elimino lo shop da btcpayserver
 		// eseguo il salvataggio del solo template
 		$result = $BTCPay->ShopDelete();
 
@@ -277,7 +280,10 @@ class ShopsController extends Controller
 	 * @param integer $id_shop : id della nuova app shop creata
 	 */
 	public function createBTCPayShop($id_shop) {
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$shops = Shops::model()->findByPk($id_shop);
 		$merchants = Merchants::model()->findByPk($shops->id_merchant);
@@ -373,7 +379,10 @@ class ShopsController extends Controller
 	public function BTCPayShopGeneral($id_shop, $attributes) {
 		// echo '<pre>'.print_r($post,true).'</pre>';
 		// exit;
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$shop = Shops::model()->findByPk($id_shop);
 		$stores = Stores::model()->findByPk($shop->id_store);

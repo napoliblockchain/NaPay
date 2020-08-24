@@ -87,7 +87,10 @@ class ProductsController extends Controller
 
 		// una volta che ho il template, mi collego a btcpayserver
 		// e lo carico su
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$shop = Shops::model()->findByPk($id_shop);
 		$merchants = Merchants::model()->findByPk($shop->id_merchant);

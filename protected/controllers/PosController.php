@@ -299,9 +299,10 @@ class PosController extends Controller
 			$save->WriteLog('napay','pos','BtcpayserverPairing','The requested merchant does not exist on this Server!', true);
  		}
 
- 		// carico l'estensione
- 		// require_once Yii::app()->basePath . '/extensions/BTCPay.php';
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
  		// Effettuo il login senza dati
  		$BTCPay = new BTCPay(null,null);
@@ -701,10 +702,10 @@ class PosController extends Controller
 	 */
 	public function BTCPayNewToken($id_pos) {
 		$save = new Save;
-		// echo '<pre>'.print_r($post,true).'</pre>';
-		// exit;
-		// require_once Yii::app()->basePath . '/extensions/BTCPay.php';
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$pos = Pos::model()->findByPk($id_pos);
 		$stores = Stores::model()->findByPk($pos->id_store);

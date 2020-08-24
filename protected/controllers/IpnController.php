@@ -229,7 +229,7 @@ class IpnController extends Controller
 		}
 
     // carico l'estensione
-		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+    //require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
 		Yii::import('libs.BTCPay.BTCPayWebRequest');
 		Yii::import('libs.BTCPay.BTCPay');
 
@@ -402,12 +402,12 @@ class IpnController extends Controller
 		}else{
             $save->WriteLog('napay','ipn','Btcpayserver','Error. The requested Public key does not exist.',true);
 		}
+    // carico l'estensione
+    //require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+    Yii::import('libs.BTCPay.BTCPayWebRequest');
+    Yii::import('libs.BTCPay.BTCPay');
 
-        // carico l'estensione
-		// require_once Yii::app()->basePath . '/extensions/BTCPay.php';
-        require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
-
-        // Effettuo il login senza dati
+    // Effettuo il login senza dati
 		$BTCPay = new BTCPay(null,null);
 		// imposto l'url
 		$merchants = Merchants::model()->findByPk($transactions->id_merchant);
@@ -416,9 +416,9 @@ class IpnController extends Controller
 		// Carico l'URL del Server BTC direttamente dalla CLASSE
 		$BPSUrl = $BTCPay->getBTCPayUrl();
 
-        $save->WriteLog('napay','ipn','Btcpayserver',"Server URL is: ".$BPSUrl);
+    $save->WriteLog('napay','ipn','Btcpayserver',"Server URL is: ".$BPSUrl);
 
-	    // Now fetch the invoice from Btcpay
+	  // Now fetch the invoice from Btcpay
 		// This is needed, since the IPN does not contain any authentication
 		$client        = new \Btcpay\Client\Client();
 	    $adapter       = new \Btcpay\Client\Adapter\CurlAdapter();

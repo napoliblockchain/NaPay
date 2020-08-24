@@ -29,7 +29,8 @@ $blockchainCheck = 'https://blockchair.com/search?q=';
 // CWebApplication properties can be configured here.
 Yii::setPathOfAlias('bootstrap', dirname(__FILE__).'/../extensions/bootstrap');
 
-$libsPath = dirname(__FILE__).DIRECTORY_SEPARATOR.'../../../packages/';
+$libsPath = dirname(__FILE__).DIRECTORY_SEPARATOR.'../../../packages';
+Yii::setPathOfAlias('libs', $libsPath);
 
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
@@ -95,25 +96,10 @@ return array(
       		'class' => 'ext.phpseclib.PhpSecLib'
     	),
 
-
-		// MIE CLASSI
-		'webRequest'=>require($libsPath.'/webRequest/webRequest.php'),
-		'BTCPay'=>require($libsPath.'/BTCPay/BTCPayWebRequest.php'),
-		'crypt'=>require($libsPath.'/crypt/crypt.php'),
-		'Utils'=>require($libsPath.'/Utils/Utils.php'),
-		'NAPay'=>require($libsPath.'/NaPacks/Autoloader.php'),
-		'eth'=>require($libsPath.'/ethereum/eth.php'),
-
-		'Coingate'=>require($libsPath.'/gateways/coingate/init.php'),
-
-
-		//CLASSI PER ACCEDERE AGLI EXCHANGES
-		'bitstamp'=>require($libsPath.'/exchanges/bitstamp/Class_Bitstamp.php'),
-
 		// funzioni di napay
 		'NMail'=>require(dirname(__FILE__).'../../extensions/NMail.php'),
 
-		//altre classi
+		//altre classi ma estensioni (in cartella protected/extensions, abbrev. ext)
 		'simple_html_dom'=>require(dirname(__FILE__).'../../extensions/simple_html_dom.php'),
 		'MYPDF'=>require(dirname(__FILE__).'../../extensions/MYPDF.php'),
 		'PHPExcel'=>require(dirname(__FILE__).'../../extensions/PHPExcel.php'),

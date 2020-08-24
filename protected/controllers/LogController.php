@@ -1,4 +1,6 @@
 <?php
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.WebApp');
 
 class LogController extends Controller
 {

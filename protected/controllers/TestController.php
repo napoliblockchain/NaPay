@@ -5,7 +5,10 @@
 // use Minishlink\WebPush\Subscription;
 // ////////////////////////////////////////////
 
-require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+// carico l'estensione
+//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+Yii::import('libs.BTCPay.BTCPayWebRequest');
+Yii::import('libs.BTCPay.BTCPay');
 
 class TestController extends Controller
 {
@@ -322,7 +325,10 @@ class TestController extends Controller
 	public function actionPairing(){
 		set_time_limit(0); //imposto il time limit unlimited
 
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$id_merchant = 40; //test
 		$id_store = 24;

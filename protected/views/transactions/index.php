@@ -1,7 +1,4 @@
 <?php
-/* @var $this PosTrxController */
-/* @var $dataProvider CActiveDataProvider */
-
 $criteria=new CDbCriteria;
 
 if (Yii::app()->user->objUser['privilegi'] == 10){
@@ -11,20 +8,8 @@ if (Yii::app()->user->objUser['privilegi'] == 10){
     ));
     $criteria->compare('id_merchant',$merchants->id_merchant,false);
 }
-// if (Yii::app()->user->objUser['privilegi'] == 15){
-//     $associations=Associations::model()->findByAttributes(array(
-//         'id_user'=>Yii::app()->user->objUser['id_user'],
-//         'deleted'=>'0',
-//     ));
-//     $merchants=Merchants::model()->findByAttributes(array(
-//         'id_association'=>$associations->id_association,
-//         'deleted'=>'0',
-//     ));
-//     $criteria->compare('id_merchant',$merchants->id_merchant,false);
-// }
-//if (Yii::app()->user->objUser['privilegi'] == 20){
-    $criteria->compare('deleted',0,false);
-//}
+
+$criteria->compare('deleted',0,false);
 
 $url = Yii::app()->createUrl('transactions/index');
 $printURL = Yii::app()->createUrl('transactions/print',['typelist'=>0]);

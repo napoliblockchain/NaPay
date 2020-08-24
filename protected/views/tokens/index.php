@@ -1,6 +1,8 @@
 <?php
-$visible =  WebApp::isMobileDevice();
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.WebApp');
 
+$visible =  WebApp::isMobileDevice();
 
 $criteria=new CDbCriteria;
 $criteria->compare('deleted',0,false);

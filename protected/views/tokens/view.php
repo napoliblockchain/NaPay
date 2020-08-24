@@ -1,5 +1,10 @@
 <div class="form">
 <?php
+Yii::import('libs.NaPacks.Settings');
+Yii::import('libs.Utils.Utils');
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.WebApp');
+
 $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'details-form',
 	'enableAjaxValidation'=>false,
@@ -41,23 +46,26 @@ $InvoiceAddress = 'https://pos.' . Utils::get_domain($http_host) . '/index.php';
 									array(
 										'type'=>'raw',
 										'name'=>Yii::t('model','status'),
+										'class'=>'jam-status',
 										'value' => ( $model->status == "new" ) ?
 										(
 											CHtml::ajaxLink(
 											    WebApp::walletStatus($model->status),          // the link body (it will NOT be HTML-encoded.)
 											    array('tokens/check'."&id=".CHtml::encode(crypt::Encrypt($model->id_token))), // the URL for the AJAX request. If empty, it is assumed to be the current URL.
 											    array(
-											        'update'=>'.btn-outline-dark',
+											        'update'=>'.btn-status',
 											        'beforeSend' => 'function() {
-											           $(".btn-outline-dark").text(Yii.t("js","Checking..."));
-											        }',
+											           								$(".btn-status").text(Yii.t("js","Checking..."));
+											        								}',
 											        'complete' => 'function() {
-													  	location.reload(true);
-											        }',
+													  									$(".btn-status").text(Yii.t("js","Reloading page..."));
+																							setTimeout(function(){ location.reload(true) }, 1);
+											        							}',
 											    )
 											)
 										) : WebApp::walletStatus($model->status),
 									),
+
 									array(
 										'label'=>Yii::t('model','Date'),
 										'value'=>date("Y-m-d H:i:s",$model->invoice_timestamp),

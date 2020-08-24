@@ -1,3 +1,9 @@
+<?php
+Yii::import('libs.NaPacks.WebApp');
+Yii::import('libs.NaPacks.Settings');
+Yii::import('libs.NaPacks.Logo');
+?>
+
 	<div class="section__content section__content--p30">
 
 		<div class="container-fluid">
@@ -11,7 +17,7 @@
 
 			<?php
 			if (Yii::app()->user->objUser['privilegi'] == 20){
-				include ('template/richieste_iscrizione.php'); 
+				include ('template/richieste_iscrizione.php');
 				include ('template/promemoria_scadenze.php');
 			}
 		 ?>

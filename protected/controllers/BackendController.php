@@ -1,4 +1,10 @@
 <?php
+Yii::import('libs.crypt.crypt');
+Yii::import('libs.NaPacks.Settings');
+Yii::import('libs.NaPacks.Notifi');
+Yii::import('libs.NaPacks.WebApp');
+Yii::import('libs.webRequest.webRequest');
+
 class BackendController extends Controller
 {
 	public function init()
@@ -330,7 +336,9 @@ class BackendController extends Controller
 		// exit;
 
 		// carico l'estensione
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		// Effettuo il login senza dati
 		$BTCPay = new BTCPay(null,null);
@@ -344,7 +352,8 @@ class BackendController extends Controller
 		/**
 		*	AUTOLOADER GATEWAYS
 		*/
-		$btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver/Btcpay/Autoloader.php';
+		$btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver-php-v1/Btcpay/Autoloader.php';
+
 		if (true === file_exists($btcpay) &&
 				true === is_readable($btcpay))
 		{
@@ -524,7 +533,9 @@ class BackendController extends Controller
 	private function checkBtcpayserverInvoice($item)
 	{
 		// carico l'estensione
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		// Effettuo il login senza dati
 		$BTCPay = new BTCPay(null,null);
@@ -538,7 +549,7 @@ class BackendController extends Controller
 		/**
 		*	AUTOLOADER GATEWAYS
 		*/
-		$btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver/Btcpay/Autoloader.php';
+		$btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver-php-v1/Btcpay/Autoloader.php';
 		if (true === file_exists($btcpay) &&
 				true === is_readable($btcpay))
 		{

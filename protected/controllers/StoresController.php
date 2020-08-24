@@ -1,4 +1,10 @@
 <?php
+Yii::import('libs.crypt.crypt');
+Yii::import('libs.NaPacks.Settings');
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.WebApp');
+Yii::import('libs.NaPacks.SaveModels');
+Yii::import('libs.NaPacks.Save');
 
 class StoresController extends Controller
 {
@@ -47,7 +53,6 @@ class StoresController extends Controller
 					'delete',
 					'ajaxSelectMerchantAddress',
 					'showpassword', //mostra la password in chiaro per il collegamento a btcpay server
-
 					'general', //impostazioni generali
 					'exchange', //imposta exchange rates
 					'checkout', // imposto il checkout experience
@@ -320,7 +325,10 @@ class StoresController extends Controller
 	 * @param integer $id_store : id del nuovo store creato
 	 */
 	public function createBTCPayStore($id_merchant, $id_store) {
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$merchants = Merchants::model()->findByPk($id_merchant);
 		$BpsUsers = BpsUsers::model()->findByAttributes(array('id_merchant'=>$id_merchant));
@@ -536,9 +544,12 @@ class StoresController extends Controller
 	 * @param array $post : $_POST
 	 */
 	public function BTCPayStoreGeneral($id_store, $post) {
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 		#echo '<pre>'.print_r($post,true).'</pre>';
 		#exit;
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
 
 		$stores = Stores::model()->findByPk($id_store);
 		$merchants = Merchants::model()->findByPk($stores->id_merchant);
@@ -615,12 +626,14 @@ class StoresController extends Controller
 			'preferredPriceSource'=>$this->getPreferredPriceSource(crypt::Decrypt($id))
 		));
 	}
-
 	/*
 	 * Questa funzione recupera la lista degli exchange del server
 	*/
 	public function getPreferredPriceSource($id_store){
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$stores = Stores::model()->findByPk($id_store);
 		$merchants = Merchants::model()->findByPk($stores->id_merchant);
@@ -648,9 +661,10 @@ class StoresController extends Controller
 	 * @param array $post : $_POST
 	 */
 	public function BTCPayStoreExchange($id_store, $post) {
-		#echo '<pre>'.print_r($post,true).'</pre>';
-		#exit;
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$stores = Stores::model()->findByPk($id_store);
 		$merchants = Merchants::model()->findByPk($stores->id_merchant);
@@ -724,6 +738,7 @@ class StoresController extends Controller
 			'asset'=>$asset,
 		));
 	}
+
 	/**
 	 * Aggiorna lo store
 	 * @return : id_store_bps
@@ -731,9 +746,10 @@ class StoresController extends Controller
 	 * @param array $post : $_POST
 	 */
 	public function BTCPayStoreMPK($id_store, $post) {
-		// echo '<pre>'.print_r($post,true).'</pre>';
-		// exit;
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$stores = Stores::model()->findByPk($id_store);
 		$merchants = Merchants::model()->findByPk($stores->id_merchant);
@@ -744,9 +760,6 @@ class StoresController extends Controller
 		$BTCPay = new BTCPay($users->email,crypt::Decrypt($BpsUsers->bps_auth));
 		// imposto l'url
 		$BTCPay->setBTCPayUrl(Settings::loadUser($merchants->id_user)->blockchainAddress);
-
-		// echo '<pre>'.print_r($BTCPay->getBTCPayUrl(),true).'</pre>';
-		// exit;
 
 		// Imposto lo storeId e il Name, prima di chiamare la funzione
 		$BTCPay->setStoreId($stores->bps_storeid);
@@ -811,8 +824,6 @@ class StoresController extends Controller
 
 		}
 		$getDefaults = $this->getDefaultsCheckout(crypt::Decrypt($id));
-		// echo "<pre>".print_r($getDefaults,true)."</pre>";
-		// exit;
 
 		$this->render('checkout/update',array(
 			'model'=>$model,
@@ -824,7 +835,10 @@ class StoresController extends Controller
 	 * Questa funzione recupera la lista delle tabelle in checkout
 	*/
 	public function getDefaultsCheckout($id_store){
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$stores = Stores::model()->findByPk($id_store);
 		$merchants = Merchants::model()->findByPk($stores->id_merchant);
@@ -848,9 +862,10 @@ class StoresController extends Controller
 	 * @param array $post : $_POST
 	 */
 	public function BTCPayStoreCheckout($id_store, $post) {
-		#echo '<pre>'.print_r($post,true).'</pre>';
-		// exit;
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$stores = Stores::model()->findByPk($id_store);
 		$merchants = Merchants::model()->findByPk($stores->id_merchant);
@@ -874,9 +889,6 @@ class StoresController extends Controller
 
 		// echo '<pre>'.print_r($object,true).'</pre>';
 		// exit;
-
-
-
 		$checkout = $BTCPay->checkout($object);
 
 		// if ($checkout === false)

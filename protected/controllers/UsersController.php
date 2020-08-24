@@ -1,4 +1,8 @@
 <?php
+Yii::import('libs.crypt.crypt');
+Yii::import('libs.NaPacks.Settings');
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.WebApp');
 
 class UsersController extends Controller
 {
@@ -573,8 +577,10 @@ class UsersController extends Controller
 	 * Effettuo il login a Btcpay Server e creo un nuovo user
 	 */
 	public function createBTCServerUser($id_merchant,$email){
-		// require_once Yii::app()->basePath . '/extensions/BTCPay.php';
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		// carico i settings per l'accesso al server
 		$merchants = Merchants::model()->findByPk($id_merchant);

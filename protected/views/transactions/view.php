@@ -4,6 +4,8 @@
 // $settings=Settings::load();
 // $btcpayInvoiceAddress = $settings->blockchainAddress;
 
+Yii::import('libs.NaPacks.Settings');
+
 $merchants = Merchants::model()->findByPk($model->id_merchant);
 $btcpayInvoiceAddress = Settings::loadUser($merchants->id_user)->blockchainAddress;
 

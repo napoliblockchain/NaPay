@@ -1,4 +1,7 @@
 <?php
+Yii::import('libs.crypt.crypt');
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.WebApp');
 
 class VerbaliController extends Controller
 {

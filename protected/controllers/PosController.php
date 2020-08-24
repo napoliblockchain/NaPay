@@ -1,4 +1,11 @@
 <?php
+Yii::import('libs.crypt.crypt');
+Yii::import('libs.Utils.Utils');
+Yii::import('libs.NaPacks.Settings');
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.WebApp');
+Yii::import('libs.NaPacks.SaveModels');
+Yii::import('libs.NaPacks.Save');
 
 class PosController extends Controller
 {
@@ -292,9 +299,10 @@ class PosController extends Controller
 			$save->WriteLog('napay','pos','BtcpayserverPairing','The requested merchant does not exist on this Server!', true);
  		}
 
- 		// carico l'estensione
- 		// require_once Yii::app()->basePath . '/extensions/BTCPay.php';
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
  		// Effettuo il login senza dati
  		$BTCPay = new BTCPay(null,null);
@@ -309,7 +317,7 @@ class PosController extends Controller
  		*	AUTOLOADER GATEWAYS
  		*/
  		// $btcpay = Yii::app()->basePath . '/extensions/gateways/btcpayserver/Btcpay/Autoloader.php';
-		$btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver/Btcpay/Autoloader.php';
+		$btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver-php-v1/Btcpay/Autoloader.php';
  		if (true === file_exists($btcpay) && true === is_readable($btcpay)){
  		    require_once $btcpay;
  		    \Btcpay\Autoloader::register();
@@ -694,10 +702,10 @@ class PosController extends Controller
 	 */
 	public function BTCPayNewToken($id_pos) {
 		$save = new Save;
-		// echo '<pre>'.print_r($post,true).'</pre>';
-		// exit;
-		// require_once Yii::app()->basePath . '/extensions/BTCPay.php';
-		require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		// carico l'estensione
+		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
+		Yii::import('libs.BTCPay.BTCPayWebRequest');
+		Yii::import('libs.BTCPay.BTCPay');
 
 		$pos = Pos::model()->findByPk($id_pos);
 		$stores = Stores::model()->findByPk($pos->id_store);

@@ -386,7 +386,7 @@ class BackendController extends Controller
 		if (!file_exists($folder.$pairings->sin.".pri") ){
 			throw new \Exception('Error. The requested Private key does not exist.');
 		}
-		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage('mc156MdhshuUYTF5365');
+		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage(crypt::Decrypt($settings->fileSystemStorageKey));
 
 		$publicKey     = $storageEngine->load($folder.$pairings->sin.'.pub');
 		$privateKey    = $storageEngine->load($folder.$pairings->sin.'.pri');
@@ -582,18 +582,7 @@ class BackendController extends Controller
 			throw new \Exception('Error. The requested Pairings does not exist.');
 		}
 
-		// if (gethostname()=='blockchain1'){
-		// 	$folder = $_SERVER["DOCUMENT_ROOT"].'/../napay/protected/privatekeys/';
-		// }elseif (gethostname()=='CGF6135T' || gethostname()=='NUNZIA'){ // SERVE PER LE PROVE IN UFFICIO
-        //     $folder = $_SERVER["DOCUMENT_ROOT"].'/napay/protected/privatekeys/';
-		// }else{
-		// 	$folder = $_SERVER["DOCUMENT_ROOT"].'/../npay/protected/privatekeys/';
-		// }
-
 		$folder = Yii::app()->basePath . '/privatekeys/';
-
-		// echo '<pre>'.print_r($folder.$pairings->sin,true).'</pre>';
-		// exit;
 
 		//verifico esistenza coppia chiavi public/private
 		if (!file_exists($folder.$pairings->sin.".pub") ){
@@ -604,15 +593,16 @@ class BackendController extends Controller
 		if (!file_exists($folder.$pairings->sin.".pri") ){
 			throw new \Exception('Error. The requested Private key does not exist.');
 		}
-		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage('mc156MdhshuUYTF5365');
-
-		$publicKey     = $storageEngine->load($folder.$pairings->sin.'.pub');
-		$privateKey    = $storageEngine->load($folder.$pairings->sin.'.pri');
 
 		$settings=Settings::load();  //$settings = SettingsNapos::model()->findByPk(1);
 		if($settings===null){
 			throw new \Exception("Error. The requested Settings does not exist.");
 		}
+
+		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage(crypt::Decrypt($settings->fileSystemStorageKey));
+
+		$publicKey     = $storageEngine->load($folder.$pairings->sin.'.pub');
+		$privateKey    = $storageEngine->load($folder.$pairings->sin.'.pri');
 
 		try {
 			// Now fetch the invoice from Btcpay

@@ -299,6 +299,11 @@ class PosController extends Controller
 			$save->WriteLog('napay','pos','BtcpayserverPairing','The requested merchant does not exist on this Server!', true);
  		}
 
+		$settings=Settings::load();
+		if($settings===null){
+      $save->WriteLog('napay','pos','BtcpayserverPairing','Error. The requested Settings does not exist.',true);
+		}
+
 		// carico l'estensione
 		//require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
 		Yii::import('libs.BTCPay.BTCPayWebRequest');
@@ -414,7 +419,7 @@ class PosController extends Controller
  		 * It's recommended that you use the EncryptedFilesystemStorage engine to persist your
  		 * keys. You can, of course, create your own as long as it implements the StorageInterface
  		 */
- 		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage('mc156MdhshuUYTF5365');
+ 		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage(crypt::Decrypt($settings->fileSystemStorageKey));
  		$storageEngine->persist($key);
  		$storageEngine->persist($pub);
 
@@ -433,7 +438,7 @@ class PosController extends Controller
 
  		//restituisco alla funzione i nuovi valori inseriti
 		$save->WriteLog('napay','pos','BtcpayserverPairing', $newfile. ' paired successfully.');
-        echo CJSON::encode($return);
+    echo CJSON::encode($return);
  	}
 
 

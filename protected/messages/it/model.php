@@ -17,6 +17,7 @@
  * NOTE, this file must be saved in UTF-8 encoding.
  */
 return array (
+  'File System Storage Key' => 'Chiave per criptare il sistema di archiviazione del file system',
   'No client account was found with the email address you entered.' => 'Non è stato trovato alcun utente con la mail indicata.',
     'Subject' => 'Oggetto',
     'Data' => 'Data',

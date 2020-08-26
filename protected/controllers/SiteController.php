@@ -1,6 +1,9 @@
 <?php
 Yii::import('libs.crypt.crypt');
 Yii::import('libs.NaPacks.Settings');
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.SaveModels');
+Yii::import('libs.NaPacks.Save');
 
 class SiteController extends Controller
 {

@@ -111,9 +111,10 @@ Yii::app()->clientScript->registerScript('iscriviti', $iscriviti);
 						<div class="col-lg-12">
 
 						<center>
-							<a  class=" button-show-items text-primary" href="#" style="font-size:1.15em;">
-								<span class="mostra-scelte"><b class="text-danger">Clicca qui</b> per vedere altre opzioni.</span>
-								<span class="nascondi-scelte" style="display:none;">Nascondi</span>
+								<a href="<?php echo Yii::app()->createUrl('site/register'); ?>">
+								<text class="text text-dark">
+									Clicca qui per iscriverti
+								</text>
 							</a>
 						</center>
 
@@ -123,56 +124,14 @@ Yii::app()->clientScript->registerScript('iscriviti', $iscriviti);
 
 					</div>
 				</div>
-				<line-items>
-					<div class="line-items" style="display:none;">
-						<div class="row">
-							<div class="col">
 
-											<p><a href="<?php echo Yii::app()->createUrl('site/loginquota'); ?>">
-												<button class="btn btn-success">
-													Paga Quota Iscrizione
-												</button>
-											</a></p>
-
-							</div>
-						</div>
-					</div>
-					<div class="line-items" style="display:none;">
-						<div class="row">
-							<div class="col">
-
-											<p><a href="<?php echo Yii::app()->createUrl('site/register'); ?>">
-												<button class="btn btn-warning">
-													Iscrizione Associazione
-												</button>
-											</a></p>
-
-							</div>
-
-						</div>
-					</div>
-				</line-items>
 
 
 
 
 
 		</div>
-		<div class="bg-secondary">
-			<h5 style="text-align:center; padding-top:20px;">I nostri supporter</h5>
-
-			<div class="row">
-					<div class="col" style="text-align:center;">
-							<img class='login-sponsor' src="<?php echo Yii::app()->request->baseUrl; ?>/css/images/logocomune.png" alt="" >
-					</div>
-					<div class="col" style="text-align:center;">
-							<img class='login-sponsor' width="100" height="100" src="<?php echo Yii::app()->request->baseUrl; ?>/css/images/parthenope.png" alt="" sizes="(max-width: 150px) 100vw, 150px">
-					</div>
-			</div>
-
-			<?php echo Logo::footer(); ?>
-		</div>
-
+		<?php echo Logo::footer('#333'); ?>
 	</div>
 </div>
 <?php $this->endWidget(); ?>

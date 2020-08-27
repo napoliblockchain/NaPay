@@ -1,17 +1,15 @@
-# Napay
+# fidelity Dashboard
 
+This is a fork of napoliblockchain/napay software
 [![Screenshot of NaPay PWA app](css/images/dashboard.png)](https://napay.napoliblockchain.it)
 
 
-Napay è un'applicazione web nata per gestire facilmente i pagamenti in bitcoin e in TTS, il Token del Comune di Napoli.
-
+Fidelity è un'applicazione web nata per gestire facilmente i pagamenti in token ERC20
 
 
 Napay è stata sviluppata in **quattro** distinte applicazioni:
 ```
 - Napay             -> Il nucleo dell'applicazioni
-- Napay Pos         -> Il Punto di vendita per richiedere i pagamenti in bitcoin e TTS
-- Napay Wallet      -> Il Wallet del commerciante per gestire i Token TTS
 - Bolt              -> Il Wallet del cittadino per i Token TTS
 ```
 Il nucleo dell'applicazione è stato ideato per lavorare al meglio su un desktop. Tuttavia, basta anche solo uno smartphone per iniziare a guadagnare bitcoin.

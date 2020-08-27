@@ -116,6 +116,10 @@ class SettingsController extends Controller
 					$model->poa_sealerPrvKey = crypt::Encrypt($_POST['SettingsWebappForm']['poa_sealerPrvKey']);
 				}
 
+				if (isset($_POST['SettingsWebappForm']['fileSystemStorageKey'])){
+					$model->fileSystemStorageKey = crypt::Encrypt($_POST['SettingsWebappForm']['fileSystemStorageKey']);
+				}
+
 				if (isset($_POST['blockchainAsset'])){
 					$model->blockchainAsset = CJSON::encode($_POST['blockchainAsset']);
 					$blockchain = Blockchains::model()->findByAttributes(['url'=>$model->blockchainAddress]);
@@ -474,7 +478,10 @@ class SettingsController extends Controller
 		Yii::import('libs.BTCPay.BTCPay');
 
 		// parametri di ricerca con merchants 0, cioè administrator
-		$settings = Settings::load();
+		$settings=Settings::load();
+		if($settings===null){
+			$save->WriteLog('napay','settings','BtcpayserverPairing','Error. The requested Settings does not exist.',true);
+		}
 		$stores = Stores::model()->findByPk($settings->id_store);
 
 		// Effettuo il login senza dati
@@ -581,7 +588,7 @@ class SettingsController extends Controller
  		 * It's recommended that you use the EncryptedFilesystemStorage engine to persist your
  		 * keys. You can, of course, create your own as long as it implements the StorageInterface
  		 */
- 		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage('mc156MdhshuUYTF5365');
+ 		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage(crypt::Decrypt($settings->fileSystemStorageKey));
  		$storageEngine->persist($key);
  		$storageEngine->persist($pub);
 

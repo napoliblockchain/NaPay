@@ -86,7 +86,7 @@ class TestController extends Controller
 		 * to load.
 		 */
 		$folder = Yii::app()->basePath . '/privatekeys/btcpay-';
-		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage('mc156MdhshuUYTF5365');
+		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage(crypt::Decrypt($settings->fileSystemStorageKey));
 		if (file_exists ($folder.$id_pos.'.pri')){
 			$privateKey    = $storageEngine->load($folder.$id_pos.'.pri');
 		}else{
@@ -194,7 +194,7 @@ class TestController extends Controller
 		}
 
 
-		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage('mc156MdhshuUYTF5365');
+		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage(crypt::Decrypt($settings->fileSystemStorageKey));
 		$privateKey    = $storageEngine->load($folder.$id_pos.'.pri');
 		$publicKey     = $storageEngine->load($folder.$id_pos.'.pub');
 

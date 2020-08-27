@@ -88,123 +88,120 @@ class IpnController extends Controller
 	 */
 	public function actionShop()
 	{
-        $save = new Save;
-        $save->WriteLog('napay','ipn','shop','Start Ipnlogger.');
+    $save = new Save;
+    $save->WriteLog('napay','ipn','shop','Start Ipnlogger.');
 
 		// Questa opzione abilita i wrapper URL per fopen (file_get_contents), in modo da potere accedere ad oggetti URL come file
 		ini_set("allow_url_fopen", true);
 
 		$raw_post_data = file_get_contents('php://input');
 		if (false === $raw_post_data) {
-            $save->WriteLog('napay','ipn','shop','Error. Could not read from the php://input stream or invalid Btcpay Server IPN received.',true);
+      $save->WriteLog('napay','ipn','shop','Error. Could not read from the php://input stream or invalid Btcpay Server IPN received.',true);
 		}else{
-            $save->WriteLog('napay','ipn','shop','Stream ok.');
+      $save->WriteLog('napay','ipn','shop','Stream ok.');
 		}
 
-        //$ipn = json_decode($raw_post_data);
 		$raw = json_decode($raw_post_data);
 		if (true === empty($raw)) {
-            $save->WriteLog('napay','ipn','shop','Error. Could not decode the JSON payload from Btcpay Server.',true);
+      $save->WriteLog('napay','ipn','shop','Error. Could not decode the JSON payload from Btcpay Server.',true);
 		}else{
-            $save->WriteLog('napay','ipn','shop','Json ok.');
+      $save->WriteLog('napay','ipn','shop','Json ok.');
 		}
-        // $save->WriteLog('napay','ipn','shop','<pre>'.print_r($raw,true).'</pre>');
+    // $save->WriteLog('napay','ipn','shop','<pre>'.print_r($raw,true).'</pre>');
 
 		if (isset($raw->data))
 			$ipn = $raw->data;
 		else
 			$ipn = $raw;
 
-        // $save->WriteLog('napay','ipn','shop','<pre>'.print_r($ipn,true).'</pre>');
-        //exit;
+    // $save->WriteLog('napay','ipn','shop','<pre>'.print_r($ipn,true).'</pre>');
+    //exit;
 
 		if (true === empty($ipn->id)) {
-            $save->WriteLog('napay','ipn','shop','Error. Invalid Btcpay Server payment notification message received - did not receive invoice ID.',true);
+      $save->WriteLog('napay','ipn','shop','Error. Invalid Btcpay Server payment notification message received - did not receive invoice ID.',true);
 		}else{
-            $save->WriteLog('napay','ipn','shop','Ipn ok.');
+      $save->WriteLog('napay','ipn','shop','Ipn ok.');
 		}
 
-        // In questo ipn legato al SELF POS, non è possibile usare id_pos ma DEVE essere usato id_shop.
-        // Il campo id_shop viene inviato tramite GET nell'URL Callback Notification impostato nello store.
-        // Una prima difficoltà sta che nella generazione dell'invoice, la webapp non viene coinvolta.
-        // Quindi ho solo la possibiltà di intercettare l'ipn in questa fase.
-        if (!isset($_GET['id_shop'])){
-            $save->WriteLog('napay','ipn','shop','Error. Invalid GET Call received.',true);
-        }else{
-            $shop = Shops::model()->findByPk($_GET['id_shop']);
-            if($shop===null){
-                $save->WriteLog('napay','ipn','shop','Error. The requested Shop does not exist.',true);
-    		}else{
-                $save->WriteLog('napay','ipn','shop','GET id_shop ok.');
-    		}
-        }
+    // In questo ipn legato al SELF POS, non è possibile usare id_pos ma DEVE essere usato id_shop.
+    // Il campo id_shop viene inviato tramite GET nell'URL Callback Notification impostato nello store.
+    // Una prima difficoltà sta che nella generazione dell'invoice, la webapp non viene coinvolta.
+    // Quindi ho solo la possibiltà di intercettare l'ipn in questa fase.
+    if (!isset($_GET['id_shop'])){
+      $save->WriteLog('napay','ipn','shop','Error. Invalid GET Call received.',true);
+    }else{
+      $shop = Shops::model()->findByPk($_GET['id_shop']);
+      if($shop===null){
+        $save->WriteLog('napay','ipn','shop','Error. The requested Shop does not exist.',true);
+    	}else{
+        $save->WriteLog('napay','ipn','shop','GET id_shop ok.');
+    	}
+    }
 
 		//vado a cercare direttamente il proprietario nella tabella transaction
 		$transaction = Transactions::model()->findByAttributes(array('id_invoice_bps'=>$ipn->id));
 
-        if($transaction===null){
-            //$transactions = new Transactions;
-            $save->WriteLog('napay','ipn','shop','Transaction not exist.');
+    if($transaction===null){
+      //$transactions = new Transactions;
+      $save->WriteLog('napay','ipn','shop','Transaction not exist.');
 
-            //CREO UNA NUOVA TRANSAZIONE SU DB PER PERMETTERNE IL RECUPERO PER LA STAMPA ricevuta
-    		$timestamp = time();
-    		$attributes = array(
-    			'id_pos'	=> -1, // in questo caso è sempre -1 (mi serve )
-    			'id_merchant' => $shop->id_merchant,
-    			'status'	=> 'new', //è sicuramente new
-    			'btc_price'	=> $ipn->btcPrice,
-    			'price'		=> $ipn->price,
-    			'currency'	=> $ipn->currency,
-    			'item_desc' => '', //$ipn->posData,
-    			'item_code' => $shop->id_shop,
-    			'id_invoice_bps' => $ipn->id,
-    			'invoice_timestamp' => $timestamp,
-    			'expiration_timestamp' => $timestamp,
-    			'current_tempo' => $timestamp,
-    			'btc_paid' => $ipn->btcPaid,
-    			'rate' => $ipn->rate,
-    			'bitcoin_address' => '',
-    			'token' => '',
-    			'btc_due' => $ipn->btcDue,
-    			'satoshis_perbyte' => 0,
-    			'total_fee' => 0,
-    		);
-    		$save = new Save;
-    		$transaction = $save->Transaction($attributes,'new'); //viene restituito un oggetto non un array
-            $save->WriteLog('napay','ipn','shop','Transaction created.');
+      //CREO UNA NUOVA TRANSAZIONE SU DB PER PERMETTERNE IL RECUPERO PER LA STAMPA ricevuta
+    	$timestamp = time();
+    	$attributes = array(
+    		'id_pos'	=> -1, // in questo caso è sempre -1 (mi serve )
+    		'id_merchant' => $shop->id_merchant,
+    		'status'	=> 'new', //è sicuramente new
+    		'btc_price'	=> $ipn->btcPrice,
+    		'price'		=> $ipn->price,
+    		'currency'	=> $ipn->currency,
+    		'item_desc' => '', //$ipn->posData,
+    		'item_code' => $shop->id_shop,
+    		'id_invoice_bps' => $ipn->id,
+    		'invoice_timestamp' => $timestamp,
+    		'expiration_timestamp' => $timestamp,
+    		'current_tempo' => $timestamp,
+    		'btc_paid' => $ipn->btcPaid,
+    		'rate' => $ipn->rate,
+    		'bitcoin_address' => '',
+    		'token' => '',
+    		'btc_due' => $ipn->btcDue,
+    		'satoshis_perbyte' => 0,
+    		'total_fee' => 0,
+    	);
+    	// $save = new Save;
+    	$transaction = $save->Transaction($attributes,'new'); //viene restituito un oggetto non un array
+      $save->WriteLog('napay','ipn','shop','Transaction created.');
 		}else {
-            $save->WriteLog('napay','ipn','shop','Transaction exist.');
-        }
-        $StatoInizialeDellaTransazione = $transaction->status;
+      $save->WriteLog('napay','ipn','shop','Transaction exist.');
+    }
+    $StatoInizialeDellaTransazione = $transaction->status;
 
-
-        // CERCO UN POS QUALUNQUE PER CARICARE LA PRIVATE E PUBLIC KEY TRAMITE id_store
-        $pos = Pos::model()->findByAttributes(array('id_store'=>$shop->id_store,'deleted'=>0));
-        if($pos===null){
-            $save->WriteLog('napay','ipn','shop','Error. The requested Pos does not exist.',true);
+    // CERCO UN POS QUALUNQUE PER CARICARE LA PRIVATE E PUBLIC KEY TRAMITE id_store
+    $pos = Pos::model()->findByAttributes(array('id_store'=>$shop->id_store,'deleted'=>0));
+    if($pos===null){
+      $save->WriteLog('napay','ipn','shop','Error. The requested Pos does not exist.',true);
 		}else{
-            $save->WriteLog('napay','ipn','shop','Pos exist.');
+      $save->WriteLog('napay','ipn','shop','Pos exist.');
 		}
 
 		$pairings = Pairings::model()->findByAttributes(array('id_pos'=>$pos->id_pos));
 		if($pairings===null){
-            $save->WriteLog('napay','ipn','shop','Error. The requested Pairings does not exist.',true);
+      $save->WriteLog('napay','ipn','shop','Error. The requested Pairings does not exist.',true);
 		}else{
-            $save->WriteLog('napay','ipn','shop','Pairings exist.');
+      $save->WriteLog('napay','ipn','shop','Pairings exist.');
 		}
 
 		/**
 		*	AUTOLOADER GATEWAYS
 		*/
-		// $btcpay = Yii::app()->basePath . '/extensions/gateways/btcpayserver/Btcpay/Autoloader.php';
     $btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver-php-v1/Btcpay/Autoloader.php';
 		if (true === file_exists($btcpay) &&
-		    true === is_readable($btcpay))
+		  true === is_readable($btcpay))
 		{
-		    require_once $btcpay;
-		    \Btcpay\Autoloader::register();
+		  require_once $btcpay;
+		  \Btcpay\Autoloader::register();
 		} else {
-            $save->WriteLog('napay','ipn','shop','Error. Btcpay Server Library could not be loaded.',true);
+      $save->WriteLog('napay','ipn','shop','Error. Btcpay Server Library could not be loaded.',true);
 		}
 
 		/**
@@ -212,8 +209,10 @@ class IpnController extends Controller
 		 * storage engine. You also need to tell it the location of the key you want
 		 * to load.
 		 */
+    $settings = Settings::load();
+
 		$folder = Yii::app()->basePath . '/privatekeys/';
-		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage('mc156MdhshuUYTF5365');
+		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage(crypt::Decrypt($settings->fileSystemStorageKey));
 		if (file_exists ($folder.$pairings->sin.'.pri')){
 			$privateKey    = $storageEngine->load($folder.$pairings->sin.'.pri');
       $save->WriteLog('napay','ipn','shop','Private key loaded.');
@@ -322,25 +321,24 @@ class IpnController extends Controller
 	 */
 	public function actionBtcpayserver()
 	{
-        $save = new Save;
-        $save->WriteLog('napay','ipn','Btcpayserver','Start Ipnlogger.');
+    $save = new Save;
+    $save->WriteLog('napay','ipn','Btcpayserver','Start Ipnlogger.');
 
 		// Questa opzione abilita i wrapper URL per fopen (file_get_contents), in modo da potere accedere ad oggetti URL come file
 		ini_set("allow_url_fopen", true);
 
 		$raw_post_data = file_get_contents('php://input');
 		if (false === $raw_post_data) {
-            $save->WriteLog('napay','ipn','Btcpayserver','Error. Could not read from the php://input stream or invalid Btcpay Server IPN received.',true);
+      $save->WriteLog('napay','ipn','Btcpayserver','Error. Could not read from the php://input stream or invalid Btcpay Server IPN received.',true);
 		}else{
-            $save->WriteLog('napay','ipn','Btcpayserver','Stream ok.');
+      $save->WriteLog('napay','ipn','Btcpayserver','Stream ok.');
 		}
 
-        //$ipn = json_decode($raw_post_data);
 		$raw = json_decode($raw_post_data);
 		if (true === empty($raw)) {
-            $save->WriteLog('napay','ipn','Btcpayserver','Error. Could not decode the JSON payload from Btcpay Server.',true);
+      $save->WriteLog('napay','ipn','Btcpayserver','Error. Could not decode the JSON payload from Btcpay Server.',true);
 		}else{
-            $save->WriteLog('napay','ipn','Btcpayserver','Json ok.');
+      $save->WriteLog('napay','ipn','Btcpayserver','Json ok.');
 		}
 
 		if (isset($raw->data))
@@ -349,15 +347,15 @@ class IpnController extends Controller
 			$ipn = $raw;
 
 		if (true === empty($ipn->id)) {
-            $save->WriteLog('napay','ipn','Btcpayserver','Error. Invalid Btcpay Server payment notification message received - did not receive invoice ID.',true);
+      $save->WriteLog('napay','ipn','Btcpayserver','Error. Invalid Btcpay Server payment notification message received - did not receive invoice ID.',true);
 		}else{
-            $save->WriteLog('napay','ipn','Btcpayserver','Ipn ok.');
+      $save->WriteLog('napay','ipn','Btcpayserver','Ipn ok.');
 		}
 
 		//vado a cercare direttamente il proprietario nella tabella transaction
 		$transactions = Transactions::model()->findByAttributes(array('id_invoice_bps'=>$ipn->id));
 		if($transactions===null){
-            $save->WriteLog('napay','ipn','Btcpayserver',"Error. The requested Transaction invoice (".$ipn->id.") does not exist.");
+      $save->WriteLog('napay','ipn','Btcpayserver',"Error. The requested Transaction invoice (".$ipn->id.") does not exist.");
 		}else{
       $save->WriteLog('napay','ipn','Btcpayserver',"The requested Transaction invoice (".$ipn->id.") exist.");
 			$StatoInizialeDellaTransazione = $transactions->status;
@@ -365,22 +363,27 @@ class IpnController extends Controller
 
 		$pairings = Pairings::model()->findByAttributes(array('id_pos'=>$transactions->id_pos));
 		if($pairings===null){
-            $save->WriteLog('napay','ipn','Btcpayserver','Error. The requested Pairings does not exist.',true);
+      $save->WriteLog('napay','ipn','Btcpayserver','Error. The requested Pairings does not exist.',true);
 		}else{
-            $save->WriteLog('napay','ipn','Btcpayserver','Pairings exist.');
+      $save->WriteLog('napay','ipn','Btcpayserver','Pairings exist.');
+		}
+
+    $settings=Settings::load();
+		if($settings===null){
+      $save->WriteLog('napay','ipn','Btcpayserver','Error. The requested Settings does not exist.',true);
 		}
 
 		/**
 		*	AUTOLOADER GATEWAYS
 		*/
-        $btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver-php-v1/Btcpay/Autoloader.php';
+    $btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver-php-v1/Btcpay/Autoloader.php';
 		if (true === file_exists($btcpay) &&
-		    true === is_readable($btcpay))
+	    true === is_readable($btcpay))
 		{
-		    require_once $btcpay;
-		    \Btcpay\Autoloader::register();
+	    require_once $btcpay;
+	    \Btcpay\Autoloader::register();
 		} else {
-            $save->WriteLog('napay','ipn','Btcpayserver','Error. Btcpay Server Library could not be loaded.',true);
+      $save->WriteLog('napay','ipn','Btcpayserver','Error. Btcpay Server Library could not be loaded.',true);
 		}
 
 		/**
@@ -389,18 +392,18 @@ class IpnController extends Controller
 		 * to load.
 		 */
 		$folder = Yii::app()->basePath . '/privatekeys/';
-		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage('mc156MdhshuUYTF5365');
+		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage(crypt::Decrypt($settings->fileSystemStorageKey));
 		if (file_exists ($folder.$pairings->sin.'.pri')){
 			$privateKey    = $storageEngine->load($folder.$pairings->sin.'.pri');
-            $save->WriteLog('napay','ipn','Btcpayserver','Private key loaded.');
+      $save->WriteLog('napay','ipn','Btcpayserver','Private key loaded.');
 		}else{
-            $save->WriteLog('napay','ipn','Btcpayserver','Error. The requested Private key does not exist.',true);
+      $save->WriteLog('napay','ipn','Btcpayserver','Error. The requested Private key does not exist.',true);
 		}
 		if (file_exists ($folder.$pairings->sin.'.pub')){
 			$publicKey     = $storageEngine->load($folder.$pairings->sin.'.pub');
-            $save->WriteLog('napay','ipn','Btcpayserver','Public key loaded.');
+      $save->WriteLog('napay','ipn','Btcpayserver','Public key loaded.');
 		}else{
-            $save->WriteLog('napay','ipn','Btcpayserver','Error. The requested Public key does not exist.',true);
+      $save->WriteLog('napay','ipn','Btcpayserver','Error. The requested Public key does not exist.',true);
 		}
     // carico l'estensione
     //require_once Yii::app()->params['libsPath'] . '/BTCPay/BTCPay.php';
@@ -421,65 +424,65 @@ class IpnController extends Controller
 	  // Now fetch the invoice from Btcpay
 		// This is needed, since the IPN does not contain any authentication
 		$client        = new \Btcpay\Client\Client();
-	    $adapter       = new \Btcpay\Client\Adapter\CurlAdapter();
+	  $adapter       = new \Btcpay\Client\Adapter\CurlAdapter();
 		$client->setUri($BPSUrl); //l'indirizzo del server BTCPay recuperato dai settings
-	   	$client->setAdapter($adapter);
+	  $client->setAdapter($adapter);
 
 		//woocommerce plugin
 		$client->setPrivateKey($privateKey);
 		$client->setPublicKey($publicKey);
-        $save->WriteLog('napay','ipn','Btcpayserver','Set private and public key.');
+    $save->WriteLog('napay','ipn','Btcpayserver','Set private and public key.');
 
 		$token = new \Btcpay\Token();
 		$token->setToken(crypt::Decrypt($pairings->token)); // UPDATE THIS VALUE
 		$token->setFacade('merchant'); //IMPORTANTE PER RECUPERARE LO STATO DELLE FATTURE DA BTCPAYSERVER :::SERGIO CASIZZONE
-   		$client->setToken($token);
+   	$client->setToken($token);
 		//$client->setToken(crypt::Decrypt($pairings->token));
-        $save->WriteLog('napay','ipn','Btcpayserver','Set token.');
+    $save->WriteLog('napay','ipn','Btcpayserver','Set token.');
 
 	 	/**
 		* This is where we will fetch the invoice object
 		*/
-        $save->WriteLog('napay','ipn','Btcpayserver',"Trying get invoice id: ".$ipn->id);
+    $save->WriteLog('napay','ipn','Btcpayserver',"Trying get invoice id: ".$ipn->id);
 		$invoice = $client->getInvoice($ipn->id);
-        $save->WriteLog('napay','ipn','Btcpayserver',"Got Btcpay invoice.");
+    $save->WriteLog('napay','ipn','Btcpayserver',"Got Btcpay invoice.");
 
-        //A QUESTO PUNTO AGGIORNO LA TRANSAZIONE IN ARCHIVIO
+    //A QUESTO PUNTO AGGIORNO LA TRANSAZIONE IN ARCHIVIO
 		$transactions->status = $invoice->getStatus();
 		$transactions->btc_paid = $invoice->getBtcPaid();
 		if(!$transactions->update()){
-            $save->WriteLog('napay','ipn','Btcpayserver',"Cannot update Transaction.",true);
+      $save->WriteLog('napay','ipn','Btcpayserver',"Cannot update Transaction.",true);
 		}else{
-            $save->WriteLog('napay','ipn','Btcpayserver',"Transaction updated.");
+      $save->WriteLog('napay','ipn','Btcpayserver',"Transaction updated.");
 		}
-        // aggiorno la transactions_info
+    // aggiorno la transactions_info
 		$cryptoInfo = Save::CryptoInfo($transactions->id_transaction, $invoice->getCryptoInfo());
-        $save->WriteLog('napay','ipn','Btcpayserver',"Transaction info updated.");
+    $save->WriteLog('napay','ipn','Btcpayserver',"Transaction info updated.");
 
 		//QUINDI INVIO UN MESSAGGIO DI NOTIFICA SOLO SE LO STATUS DELLA INVOICE ATTUALE è != DAL PRECEDENTE
 		//NON HA SENSO UNA NOTIFICA PER STATUS UGUALI visto che btcpayserver può inviare anche + notifiche
-        //per lo stesso status... !!!
+    //per lo stesso status... !!!
 		if ($StatoInizialeDellaTransazione <> $invoice->getStatus()){
 			$notification = array(
 				'type_notification' => 'invoice',
-                'id_user' => Merchants::model()->findByPk($transactions->id_merchant)->id_user,
+        'id_user' => Merchants::model()->findByPk($transactions->id_merchant)->id_user,
 				'id_tocheck' => $transactions->id_transaction,
 				'status' => $invoice->getStatus(),
-                'description' => Notifi::description($invoice->getStatus(),'invoice'),
+        'description' => Notifi::description($invoice->getStatus(),'invoice'),
 				//'description' => ' da '. $transactions->item_desc,
 				// 'url' => Yii::app()->createUrl("transactions/view")."&id=".crypt::Encrypt($transactions->id_transaction),
-                // La URL non deve comprendere l'hostname in quanto deve essere raggiungibile da più applicazioni
-                 'url' => 'index.php?r=transactions/view&id='.crypt::Encrypt($transactions->id_transaction),
+        // La URL non deve comprendere l'hostname in quanto deve essere raggiungibile da più applicazioni
+        'url' => 'index.php?r=transactions/view&id='.crypt::Encrypt($transactions->id_transaction),
 				'timestamp' => time(),
 				'price' => $invoice->getPrice(),
 				'deleted' => 0,
 			);
-            //a questo punto posso anche inviare un messaggio push!!!
-            Push::Send($save->Notification($notification,true),'dashboard');
+      //a questo punto posso anche inviare un messaggio push!!!
+      Push::Send($save->Notification($notification,true),'dashboard');
 		}
 
 		//ADESSO POSSO USCIRE CON UN MESSAGGIO POSITIVO ;^)
-        $save->WriteLog('napay','ipn','Btcpayserver',"End: IPN received for BtcPay Server transaction ".$invoice->getId()." . Status = " .$invoice->getStatus()." Price = ". $invoice->getPrice(). " Paid = ".$invoice->getBtcPaid());
+    $save->WriteLog('napay','ipn','Btcpayserver',"End: IPN received for BtcPay Server transaction ".$invoice->getId()." . Status = " .$invoice->getStatus()." Price = ". $invoice->getPrice(). " Paid = ".$invoice->getBtcPaid());
 
 		//Respond with HTTP 200, so BitPay knows the IPN has been received correctly
 		//If BitPay receives <> HTTP 200, then BitPay will try to send the IPN again with increasing intervals for two more hours.
@@ -795,29 +798,29 @@ class IpnController extends Controller
 	 */
 	public function actionIscrizione()
 	{
-        $save = new Save;
-        $save->WriteLog('napay','ipn','iscrizione','Start Ipnlogger.');
+    $save = new Save;
+    $save->WriteLog('napay','ipn','iscrizione','Start Ipnlogger.');
 
-        $settings=Settings::load();
-    		if($settings===null){
-            $save->WriteLog('napay','ipn','iscrizione','Error. Error. The requested Settings does not exist.',true);
-    		}
+    $settings=Settings::load();
+    if($settings===null){
+      $save->WriteLog('napay','ipn','iscrizione','Error. Error. The requested Settings does not exist.',true);
+    }
 
 		// Questa opzione abilita i wrapper URL per fopen (file_get_contents), in modo da potere accedere ad oggetti URL come file
 		ini_set("allow_url_fopen", true);
 
 		$raw_post_data = file_get_contents('php://input');
 		if (false === $raw_post_data) {
-            $save->WriteLog('napay','ipn','iscrizione','Error. Could not read from the php://input stream or invalid Btcpay Server IPN received.',true);
+      $save->WriteLog('napay','ipn','iscrizione','Error. Could not read from the php://input stream or invalid Btcpay Server IPN received.',true);
 		}else{
-            $save->WriteLog('napay','ipn','iscrizione','Stream ok.');
+      $save->WriteLog('napay','ipn','iscrizione','Stream ok.');
 		}
 
-        $raw = json_decode($raw_post_data);
+    $raw = json_decode($raw_post_data);
 		if (true === empty($raw)) {
-            $save->WriteLog('napay','ipn','iscrizione','Error. Could not decode the JSON payload from Btcpay Server.',true);
+      $save->WriteLog('napay','ipn','iscrizione','Error. Could not decode the JSON payload from Btcpay Server.',true);
 		}else{
-            $save->WriteLog('napay','ipn','iscrizione','Json ok.');
+      $save->WriteLog('napay','ipn','iscrizione','Json ok.');
 		}
 
 		if (isset($raw->data))
@@ -826,9 +829,9 @@ class IpnController extends Controller
 			$ipn = $raw;
 
 		if (true === empty($ipn->id)) {
-            $save->WriteLog('napay','ipn','iscrizione','Error. Invalid Btcpay Server payment notification message received - did not receive invoice ID.',true);
+      $save->WriteLog('napay','ipn','iscrizione','Error. Invalid Btcpay Server payment notification message received - did not receive invoice ID.',true);
 		}else{
-            $save->WriteLog('napay','ipn','iscrizione','Ipn ok.');
+      $save->WriteLog('napay','ipn','iscrizione','Ipn ok.');
 		}
 
 		// carico la riga dei pagamenti
@@ -854,10 +857,10 @@ class IpnController extends Controller
 		*/
     $btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver-php-v1/Btcpay/Autoloader.php';
 		if (true === file_exists($btcpay) &&
-		    true === is_readable($btcpay))
+		  true === is_readable($btcpay))
 		{
-		    require_once $btcpay;
-		    \Btcpay\Autoloader::register();
+		  require_once $btcpay;
+		  \Btcpay\Autoloader::register();
 		} else {
       $save->WriteLog('napay','ipn','iscrizione',"Error. Btcpay Server Library could not be loaded.",true);
 		}
@@ -867,7 +870,7 @@ class IpnController extends Controller
 		 * to load.
 		 */
 		$folder = Yii::app()->basePath . '/privatekeys/webapp';
-		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage('mc156MdhshuUYTF5365');
+		$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage(crypt::Decrypt($settings->fileSystemStorageKey));
 		if (file_exists ($folder.'.pri')){
 			$privateKey    = $storageEngine->load($folder.'.pri');
       $save->WriteLog('napay','ipn','iscrizione','Private key loaded.');
@@ -876,12 +879,12 @@ class IpnController extends Controller
 		}
 		if (file_exists ($folder.'.pub')){
 			$publicKey     = $storageEngine->load($folder.'.pub');
-            $save->WriteLog('napay','ipn','iscrizione','Public key loaded.');
+      $save->WriteLog('napay','ipn','iscrizione','Public key loaded.');
 		}else{
-            $save->WriteLog('napay','ipn','iscrizione','Error. The requested Public key does not exist.',true);
+      $save->WriteLog('napay','ipn','iscrizione','Error. The requested Public key does not exist.',true);
 		}
 
-    	// Now fetch the invoice from Btcpay
+    // Now fetch the invoice from Btcpay
 		// This is needed, since the IPN does not contain any authentication
 		$client        = new \Btcpay\Client\Client();
     $adapter       = new \Btcpay\Client\Adapter\CurlAdapter();
@@ -904,7 +907,7 @@ class IpnController extends Controller
 	 	/**
 		* This is where we will fetch the invoice object
 		*/
-    $save->WriteLog('napay','ipn','iscrizione',"Trying get invoice id: ".$ipn->id);
+    $save->WriteLog('napay','ipn','iscrizione',"Try getting invoice id: ".$ipn->id);
 
   	$myInvoice = $client->getInvoice($ipn->id);
 
@@ -926,7 +929,7 @@ class IpnController extends Controller
     	$yearEnd = date('Y-m-d', strtotime('last day of december'));
 
 			// $pagamenti->data_scadenza	= date('Y/m/d',time()+ 60*60*24*365 + $leftdays); //+ 1 anno
-            $pagamenti->data_scadenza	= $yearEnd;
+      $pagamenti->data_scadenza	= $yearEnd;
 
 			// quindi aggiorno il progressivo dei pagamenti
 			if ($settings->progressivo_ricevute_anno == $pagamenti->anno){
@@ -941,14 +944,14 @@ class IpnController extends Controller
 				$pagamenti->progressivo = 1;
 			}
 
-            //QUINDI INVIO UN MESSAGGIO DI NOTIFICA,
+      //QUINDI INVIO UN MESSAGGIO DI NOTIFICA,
       $this->notifyMail($pagamenti->id_user,$ipn->id);
 		}
 
 		if(!$pagamenti->update()){
-            $save->WriteLog('napay','ipn','iscrizione','Error. Cannot update transaction.',true);
+      $save->WriteLog('napay','ipn','iscrizione','Error. Cannot update transaction.',true);
 		}else{
-            $save->WriteLog('napay','ipn','iscrizione','Transaction updated.');
+      $save->WriteLog('napay','ipn','iscrizione','Transaction updated.');
 		}
 
 		//ADESSO POSSO USCIRE CON UN MESSAGGIO POSITIVO ;^)
@@ -959,18 +962,17 @@ class IpnController extends Controller
 		header("HTTP/1.1 200 OK");
 	}
 
-    //invia mail agli admin dell'avvenuta ricezione tramite ipn dello status dell'invoice dell'iscrizione
-    private function notifyMail($id_user,$ipn_id){
-        //cerco tutti gli admin per inoltrare la mail di nuova iscrizione
-        $criteria=new CDbCriteria();
-        $criteria->compare('id_users_type',3,false);
-        $admins = Users::model()->findAll($criteria);
+  //invia mail agli admin dell'avvenuta ricezione tramite ipn dello status dell'invoice dell'iscrizione
+  private function notifyMail($id_user,$ipn_id){
+    //cerco tutti gli admin per inoltrare la mail di nuova iscrizione
+    $criteria=new CDbCriteria();
+    $criteria->compare('id_users_type',3,false);
+    $admins = Users::model()->findAll($criteria);
 
-        $listaAdmins = CHtml::listData($admins,'id_user' , 'email');
-        foreach ($listaAdmins as $id => $adminEmail)
-            NMail::SendMail('subscriptionAdmin',crypt::Encrypt($id_user),$adminEmail,$ipn_id);
-
-    }
+    $listaAdmins = CHtml::listData($admins,'id_user' , 'email');
+    foreach ($listaAdmins as $id => $adminEmail)
+      NMail::SendMail('subscriptionAdmin',crypt::Encrypt($id_user),$adminEmail,$ipn_id);
+  }
 
 	/**
      * Sets the IPN verification to sandbox mode (for use when testing,
@@ -979,7 +981,7 @@ class IpnController extends Controller
      */
     public function useSandbox()
     {
-        $this->use_sandbox = true;
+      $this->use_sandbox = true;
     }
 
     /**
@@ -989,7 +991,7 @@ class IpnController extends Controller
      */
     public function usePHPCerts()
     {
-        $this->use_local_certs = false;
+      $this->use_local_certs = false;
     }
 	/**
 	* Determine endpoint to post the verification data to.

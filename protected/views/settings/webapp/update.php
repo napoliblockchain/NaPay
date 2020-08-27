@@ -25,6 +25,7 @@ $tabList['Socials']   = array('id'=>'socials','content'=>$this->renderPartial('w
 $tabList['Vapid Push']   = array('id'=>'vapid','content'=>$this->renderPartial('webapp/_vapid',array('model'=>$model, ),TRUE));
 $tabList['Paypal']   = array('id'=>'paypal','content'=>$this->renderPartial('webapp/_paypal',array('model'=>$model, ),TRUE));
 $tabList['reCaptcha2']   = array('id'=>'recaptcha','content'=>$this->renderPartial('webapp/_recaptcha',array('model'=>$model, ),TRUE));
+$tabList['Storage Engine']   = array('id'=>'storage','content'=>$this->renderPartial('webapp/_storage',array('model'=>$model, ),TRUE));
 $tabList['Negozio']   = array('id'=>'store','content'=>$this->renderPartial('webapp/_store',array('model'=>$model),TRUE));
 $tabList['POS']   = array('id'=>'pos','content'=>$this->renderPartial('webapp/_pos',array('model'=>$model),TRUE));
 // $tabList['Socials']   = array('id'=>'socials','content'=>$this->renderPartial('webapp/_socials',array('model'=>$model),TRUE));

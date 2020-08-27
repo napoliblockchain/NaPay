@@ -1,4 +1,13 @@
 <?php
+Yii::import('libs.crypt.crypt');
+Yii::import('libs.NaPacks.Logo');
+Yii::import('libs.NaPacks.Settings');
+Yii::import('libs.NaPacks.Notifi');
+Yii::import('libs.NaPacks.Push');
+Yii::import('libs.NaPacks.SaveModels');
+Yii::import('libs.NaPacks.Save');
+Yii::import('libs.NaPacks.WebApp');
+
 class PayfeeController extends Controller
 {
 	public function init()
@@ -365,43 +374,49 @@ class PayfeeController extends Controller
 	 */
 	public function actionBitcoinInvoice()
 	{
+		$save = new Save;
+
 		if (true === isset($_POST['amount']) && trim($_POST['amount']) != 0) {
  			$amount = trim($_POST['amount']);
  		} else {
- 			echo CJSON::encode(array("error"=>"Amount invalid!"));
+			$ret = $save->WriteLog('napay','PayFee','BitcoinInvoice','Amount invalid!');
+ 			echo CJSON::encode(array("error"=>$ret->description));
  			exit;
  		}
 
 		$settings = Settings::load();
 		if($settings->pos_sin == ''){
-			echo CJSON::encode(array("error"=>"The requested Settings Pairing does not exist!"));
+			$ret = $save->WriteLog('napay','PayFee','BitcoinInvoice','The requested Settings Pairing does not exist!');
+ 			echo CJSON::encode(array("error"=>$ret->description));
  			exit;
 		}
 
 		$pairings = Pairings::model()->findByAttributes(['id_pos'=>crypt::Decrypt($_POST['id_pos'])]);
 		if($pairings->sin == '' || $pairings->token == ''){
-			echo CJSON::encode(array("error"=>"The requested Pairing does not exist!"));
+			$ret = $save->WriteLog('napay','PayFee','BitcoinInvoice','The requested Pairing Pairing does not exist!');
+			echo CJSON::encode(array("error"=>$ret->description));
  			exit;
 		}
-		// echo "<pre>".print_r($pairings->attributes,true)."</pre>";
+
+		$settings=Settings::load();
+		if($settings===null){
+      $save->WriteLog('napay','PayFee','BitcoinInvoice','Error. The requested Settings does not exist.',true);
+		}
 
 		/**
 		*	AUTOLOADER GATEWAYS
 		*/
-		$btcpayserver = Yii::app()->params['libsPath'] . '/gateways/btcpayserver/Btcpay/Autoloader.php';
-		// $btcpayserver = Yii::app()->basePath . '/extensions/gateways/btcpayserver/Btcpay/Autoloader.php';
+		$btcpayserver = Yii::app()->params['libsPath'] . '/gateways/btcpayserver-php-v1/Btcpay/Autoloader.php';
 		if (true === file_exists($btcpayserver) &&
-		    true === is_readable($btcpayserver))
+		  true === is_readable($btcpayserver))
 		{
-		    require_once $btcpayserver;
-		    \Btcpay\Autoloader::register();
+		  require_once $btcpayserver;
+		  \Btcpay\Autoloader::register();
 		} else {
-			echo CJSON::encode(array("error"=>"BtcPay Server Library could not be loaded!"));
-		    //throw new Exception('BtcPay Server Library could not be loaded');
+			$ret = $save->WriteLog('napay','PayFee','BitcoinInvoice','BtcPay Server Library could not be loaded!');
+			echo CJSON::encode(array("error"=>$ret->description));
 			exit;
 		}
-
-
 
 		/**
 		 * To load up keys that you have previously saved, you need to use the same
@@ -410,13 +425,14 @@ class PayfeeController extends Controller
 		 */
 		$folder = Yii::app()->basePath . '/privatekeys/';
 		if (true === file_exists($folder.$pairings->sin.'.pri') &&
-		    true === is_readable($folder.$pairings->sin.'.pri'))
+		  true === is_readable($folder.$pairings->sin.'.pri'))
 		{
-			$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage('mc156MdhshuUYTF5365');
+			$storageEngine = new \Btcpay\Storage\EncryptedFilesystemStorage(crypt::Decrypt($settings->fileSystemStorageKey));
 			$privateKey    = $storageEngine->load($folder.$pairings->sin.'.pri');
 			$publicKey     = $storageEngine->load($folder.$pairings->sin.'.pub');
 		}else{
-			echo CJSON::encode(array("error"=>"Public and private keys cannot be found!"));
+			$ret = $save->WriteLog('napay','PayFee','BitcoinInvoice','Public and private keys cannot be found!');
+			echo CJSON::encode(array("error"=>$ret->description));
 			exit;
 		}
 
@@ -551,15 +567,15 @@ class PayfeeController extends Controller
 		$send_json = array(
 			'url' => $invoice->getUrl(),
 		);
-    	echo CJSON::encode($send_json);
+    echo CJSON::encode($send_json);
 	}
 
 	//recupera lo streaming json dal contenuto txt del body
 	private function getJsonBody($response)
 	{
 		$start = strpos($response,'{',0);
-        $substr = substr($response,$start);
-        return json_decode($substr, true);
+    $substr = substr($response,$start);
+    return json_decode($substr, true);
 	}
 
 	private function save_pagamenti($array){
@@ -574,6 +590,7 @@ class PayfeeController extends Controller
 		// exit;
 		return $return;
 	}
+
 	private function update_pagamenti($array){
 		$pagamenti = Pagamenti::model()->findByAttributes(array('id_invoice_bps'=>$array['id_invoice_bps']));
 		if (null !== $pagamenti){
@@ -586,6 +603,7 @@ class PayfeeController extends Controller
 		}
 		return false;
 	}
+	
 	private function cancel_pagamenti($array){
 		$pagamenti = Pagamenti::model()->findByAttributes(
 			array(

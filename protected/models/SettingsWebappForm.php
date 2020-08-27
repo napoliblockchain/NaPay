@@ -14,11 +14,8 @@
  */
 class SettingsWebappForm extends CFormModel
 {
-	//BTCPayServer
-	// public $BTCPayServerAddress;
-	// public $BTCPayServerAddressWebApp;
-	// public $BPS_Admin_Email;
-	// public $BPS_Admin_Password;
+	//Encrypted File System Storage key
+	public $fileSystemStorageKey;
 
 	//Google reCaptcha2
 	public $reCaptcha2PublicKey;
@@ -84,9 +81,9 @@ class SettingsWebappForm extends CFormModel
 	public $gdpr_titolare;
 	public $gdpr_vat;
 	public $gdpr_address;
-    public $gdpr_city;
-    public $gdpr_country;
-    public $gdpr_cap;
+  public $gdpr_city;
+  public $gdpr_country;
+  public $gdpr_cap;
 	public $gdpr_telefono;
 	public $gdpr_fax;
 	public $gdpr_email;
@@ -206,7 +203,7 @@ class SettingsWebappForm extends CFormModel
 			'reCaptcha2PrivateKey' => 'Google reCaptcha2 Private Key' ,
 			'reCaptcha2PublicKey' => 'Google reCaptcha2 Public Key' ,
 
-
+			'fileSystemStorageKey' => Yii::t('model','File System Storage Key'),
 		);
 	}
 }

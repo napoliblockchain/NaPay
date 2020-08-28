@@ -47,6 +47,10 @@ class NMail {
                 $subject = 'Codice Identificativo POS '.Yii::app()->params['shortName'];
                 break;
 
+            case 'signupAdmin':
+                $subject = Yii::t('notify','{application} - User signup',array('{application}'=>Yii::app()->params['shortName']));
+                break;
+
             case 'iscrizione':
             case 'iscrizioneInstitutes':
             case 'associations':

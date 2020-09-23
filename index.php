@@ -1,5 +1,4 @@
 <?php
-// $yiiVersion = 'yii';
 $yiiVersion = 'yii-1.1.22';
 
 // change the following paths if necessary

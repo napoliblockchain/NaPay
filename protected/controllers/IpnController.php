@@ -1027,9 +1027,6 @@ class IpnController extends Controller
             $save->WriteLog('napay','ipn','Paypal','Stream ok.');
 		}
 
-
-
-
         if (is_array($raw_post_data)){
             $save->WriteLog('napay','ipn','Paypal','Is array.');
             $raw_post_array = $raw_post_data;
@@ -1038,8 +1035,8 @@ class IpnController extends Controller
             $raw_post_array = explode('&', $raw_post_data);
         }
 
-        $save->WriteLog('napay','ipn','Paypal',"echo<pre>".$raw_post_data."</pre>");
-        $save->WriteLog('napay','ipn','Paypal',"raw_post_data<pre>".print_r($raw_post_data,true)."</pre>");
+        // $save->WriteLog('napay','ipn','Paypal',"echo<pre>".$raw_post_data."</pre>");
+        // $save->WriteLog('napay','ipn','Paypal',"raw_post_data<pre>".print_r($raw_post_data,true)."</pre>");
         $save->WriteLog('napay','ipn','Paypal',"raw_post_array<pre>".print_r($raw_post_array,true)."</pre>");
 
 // $save->WriteLog('napay','ipn','Paypal',"test<pre>".print_r($raw_post_array[5],true)."</pre>");
@@ -1123,6 +1120,79 @@ class IpnController extends Controller
             $save->WriteLog('napay','ipn','Paypal',"Error. Invalid PayPal Ipn",true);
         }
         $save->WriteLog('napay','ipn','Paypal',"PayPal Ipn valid");
+
+        // a questo punto carico il pagamento da db
+        $paypal_txn_id = $PPPOST['txn_id'];
+        $settings = Settings::load();
+		$pagamenti = Pagamenti::model()->findByAttributes(array('paypal_txn_id'=>$paypal_txn_id));
+
+
+        if($pagamenti===null){
+            $save->WriteLog('napay','ipn','Paypal',"The requested Paypal Payment invoice (".$paypal_txn_id.") does not exist.",true);
+            // se non esiste il pagamento potrebbe essere una donazione
+            // per cui devo generare lo stesso una ricevuta ...
+            // quindi aggiorno il progressivo dei pagamenti
+            // if ($settings->progressivo_ricevute_anno == date('Y',time())){
+            //    $settings->progressivo_ricevute_pagamenti ++;
+            //    Settings::save($settings,array('progressivo_ricevute_pagamenti'));
+            // }else{
+            //    $settings->progressivo_ricevute_anno = date('Y',time());
+            //    $settings->progressivo_ricevute_pagamenti = 1;
+            //    Settings::save($settings,array('progressivo_ricevute_pagamenti','progressivo_ricevute_anno'));
+            // }
+            // $pagamenti->anno = $settings->progressivo_ricevute_anno;
+            // $pagamenti->progressivo = $settings->progressivo_ricevute_pagamenti;
+
+
+            // $timestamp = time();
+            //
+            // $attributes = array(
+    		// 	'id_user'	=> 1, // id user ovviamente in caso di donazione non esiste
+    		// 	'id_quota'  => 1, //pagamento quota annuale
+    		// 	'anno'	=> date('Y',$timestamp),
+    		// 	'progressivo' => 0,
+    		// 	'importo'	=> $PPPOST['mc_gross'],
+    		// 	'id_tipo_pagamento'	=> 2, //pagamento paypal
+    		// 	'data_registrazione' => date('Y-m-d', $timestamp ),
+    		// 	'data_inizio' => date('Y-m-d', $timestamp ),
+    		// 	'data_scadenza' => date('Y-m-d', $timestamp ),
+    		// 	'id_invoice_bps' => 0,
+    		// 	'paypal_txn_id' => $paypal_txn_id, //necessario per la ricerca per ipn paypal
+    		// 	'status' => 'new',
+    		// );
+            //
+            // $save->WriteLog('napay','ipn','Paypal',"Saving the payment invoice attributes<pre>".$attributes."</pre>");
+            //
+            //
+            // //$pagamenti = $this->update_pagamenti($attributes);
+    		// #echo "<pre>".print_r($attributes,true)."</pre>";
+    		// #exit;
+    		// $pagamenti = $this->save_pagamenti($attributes);
+            // $save->WriteLog('napay','ipn','Paypal',"Invoice saved<pre>".$pagamenti."</pre>");
+		}
+        //else{
+            // $save->WriteLog('napay','ipn','Paypal',"Paypal txn id (".$paypal_txn_id.") loaded.");
+            //
+            // //A QUESTO PUNTO AGGIORNO il pagamento  IN ARCHIVIO inserendo la data del pagamento + 366 giorni
+            // // $pagamenti->importo = $payment->transactions[0]->related_resources[0]->sale->amount->total;
+            // $pagamenti->importo = $payment->transactions[0]->getAmount()->total;
+            // if ($payment->transactions[0]->related_resources[0]->sale->state == 'completed'){
+            //     $pagamenti->status = 'complete';
+    		// 	$pagamenti->data_scadenza	= $yearEnd;
+    		// }
+            //
+    		// if(!$pagamenti->update()){
+            //     $save->WriteLog('napay','ipn','Paypal',"Error. Cannot update pagamenti transaction.",true);
+    		// }else{
+            //     $save->WriteLog('napay','ipn','Paypal',"pagamenti transaction updated.");
+    		// }
+
+		//}
+
+        // prosegui solo se esiste la transazione in db...
+
+
+
 	    /*
 	     * Process IPN
 	     * A list of variables is available here:
@@ -1201,85 +1271,45 @@ class IpnController extends Controller
 
         $save->WriteLog('napay','ipn','Paypal',"PayPal setconfig ok");
 
-        $paymentId = $PPPOST['txn_id'];
+        $paymentId = $pagamenti->id_invoice_bps;
 
         $save->WriteLog('napay','ipn','Paypal',"paymentId is: ".$paymentId);
 
 
-         try {
-             $payment = \PayPal\Api\Payment::get($paymentId, $apiContext);
-         } catch (\PayPal\Api\Exception $ex) {
-             $save->WriteLog('napay','ipn','Paypal',"Error. The requested Paypal Payment id (".$paymentId.") does not exist.",true);
-         }
+         // try {
+         //     $payment = \PayPal\Api\Payment::get($paymentId, $apiContext);
+         // } catch (\PayPal\Api\Exception $ex) {
+         //     $save->WriteLog('napay','ipn','Paypal',"Error. The requested Paypal Payment id (".$paymentId.") does not exist.",true);
+         // }
 
-         $save->WriteLog('napay','ipn','Paypal',"Error. The requested Paypal Payment id (".$paymentId.") exist.");
+        try {
+            $payment = \PayPal\Api\Payment::get($paymentId, $apiContext);
+        } catch (\PayPal\Exception\PayPalConnectionException $e) {
+            echo $e->getData(); // This will print a JSON which has specific details about the error.
+            exit;
+        }
 
-        $paypal_txn_id = $payment->transactions[0]->related_resources[0]->sale->id;
-        $save->WriteLog('napay','ipn','Paypal',"Paypal txn id (".$paypal_txn_id.") loaded.");
+        $save->WriteLog('napay','ipn','Paypal',"The requested Paypal Payment id (".$paymentId.") exist.");
+        $save->WriteLog('napay','ipn','Paypal',"Response is: <pre>".print_r($payment,true)."</pre>");
 
-		//vado a cercare direttamente il proprietario nella tabella transaction
-        $settings = Settings::load();
-		$pagamenti = Pagamenti::model()->findByAttributes(array('paypal_txn_id'=>$paypal_txn_id));
+        //$paypal_txn_id = $payment->transactions[0]->related_resources[0]->sale->id;
+        //$save->WriteLog('napay','ipn','Paypal',"Paypal txn id (".$paypal_txn_id.") loaded.");
+
+		// ho già cercato... vado a cercare direttamente il proprietario nella tabella transaction
+        // A QUESTO PUNTO AGGIORNO il pagamento  IN ARCHIVIO inserendo la nuova data di scadenza
+        // $pagamenti->importo = $payment->transactions[0]->related_resources[0]->sale->amount->total;
+        $pagamenti->importo = $payment->transactions[0]->getAmount()->total;
         $yearEnd = date('Y-m-d', strtotime('last day of december'));
+        if ($payment->transactions[0]->related_resources[0]->sale->state == 'completed'){
+            $pagamenti->status = 'complete';
+        	$pagamenti->data_scadenza	= $yearEnd;
+        }
 
-        if($pagamenti===null){
-            $save->WriteLog('napay','ipn','Paypal',"The requested Paypal Payment invoice (".$paypal_txn_id.") does not exist.");
-            // se non esiste il pagamento potrebbe essere una donazione
-            // per cui devo generare lo stesso una ricevuta ...
-            // quindi aggiorno il progressivo dei pagamenti
-            if ($settings->progressivo_ricevute_anno == date('Y',time())){
-               $settings->progressivo_ricevute_pagamenti ++;
-               Settings::save($settings,array('progressivo_ricevute_pagamenti'));
-            }else{
-               $settings->progressivo_ricevute_anno = date('Y',time());
-               $settings->progressivo_ricevute_pagamenti = 1;
-               Settings::save($settings,array('progressivo_ricevute_pagamenti','progressivo_ricevute_anno'));
-            }
-            $pagamenti->anno = $settings->progressivo_ricevute_anno;
-            $pagamenti->progressivo = $settings->progressivo_ricevute_pagamenti;
-
-
-            $timestamp = time();
-            $attributes = array(
-                'id_user'	=> 1, // id user ovviamente in caso di donazione non esiste
-                'id_quota'  => 1, //pagamento quota annuale
-                'anno'	=> $pagamenti->anno,
-                'progressivo' => $pagamenti->progressivo,
-                'importo'	=> $payment->transactions[0]->getAmount()->total,
-                'id_tipo_pagamento'	=> 2, //pagamento paypal
-                'data_registrazione' => date('Y-m-d', $timestamp ),
-                'data_inizio' => date('Y-m-d', $timestamp ),
-                'data_scadenza' => $yearEnd,
-                'id_invoice_bps' => $payment->id, //necessario per la ricerca
-                'paypal_txn_id' => $paypal_txn_id, //necessario per la ricerca per ipn paypal
-                'status' => 'complete', // lo status va in 'paid'.. successivamente l'ipn lo trasforma in confirmed/completed!
-            );
-            $save->WriteLog('napay','ipn','Paypal',"Saving the payment invoice attributes<pre>".$attributes."</pre>");
-
-
-            //$pagamenti = $this->update_pagamenti($attributes);
-    		#echo "<pre>".print_r($attributes,true)."</pre>";
-    		#exit;
-    		$pagamenti = $this->save_pagamenti($attributes);
-            $save->WriteLog('napay','ipn','Paypal',"Invoice saved<pre>".$pagamenti."</pre>");
-		}else{
-            $save->WriteLog('napay','ipn','Paypal',"Paypal txn id (".$paypal_txn_id.") loaded.");
-
-            //A QUESTO PUNTO AGGIORNO il pagamento  IN ARCHIVIO inserendo la data del pagamento + 366 giorni
-            // $pagamenti->importo = $payment->transactions[0]->related_resources[0]->sale->amount->total;
-            $pagamenti->importo = $payment->transactions[0]->getAmount()->total;
-            if ($payment->transactions[0]->related_resources[0]->sale->state == 'completed'){
-                $pagamenti->status = 'complete';
-    			$pagamenti->data_scadenza	= $yearEnd;
-    		}
-
-    		if(!$pagamenti->update()){
-                $save->WriteLog('napay','ipn','Paypal',"Error. Cannot update pagamenti transaction.",true);
-    		}else{
-                $save->WriteLog('napay','ipn','Paypal',"pagamenti transaction updated.");
-    		}
-
-		}
+        if(!$pagamenti->update()){
+            $save->WriteLog('napay','ipn','Paypal',"Error. Cannot update pagamenti transaction.",true);
+        }else{
+            $save->WriteLog('napay','ipn','Paypal',"pagamenti transaction updated.");
+        }
 
 		//QUINDI INVIO UN MESSAGGIO DI NOTIFICA
 		$notification = array(
@@ -1306,7 +1336,7 @@ class IpnController extends Controller
 
 		//ADESSO POSSO USCIRE CON UN MESSAGGIO POSITIVO ;^)
         // $save->WriteLog('napay','ipn','Paypal'," : End: IPN received for Paypal transaction ".$invoice['Id']." . Status = " .$invoice['Status']." Price = ". $invoice['btcPrice']. " Paid = ".$invoice['btcPaid']);
-        $save->WriteLog('napay','ipn','Paypal',"IPN for Paypal transaction comlpeted.");
+        $save->WriteLog('napay','ipn','Paypal',"IPN for Paypal transaction completed.");
 
 		//Respond with HTTP 200
 		header("HTTP/1.1 200 OK");

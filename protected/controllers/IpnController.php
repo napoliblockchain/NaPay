@@ -896,7 +896,7 @@ class IpnController extends Controller
 		//woocommerce plugin
 		$client->setPrivateKey($privateKey);
 		$client->setPublicKey($publicKey);
-    $save->WriteLog('napay','ipn','iscrizione','Set private and public key.');
+    $save->WriteLog('napay','ipn','iscrizione','Set private and public keys.');
 
 		$token = new \Btcpay\Token();
 		$token->setToken(crypt::Decrypt($pairings->token));
@@ -1027,15 +1027,26 @@ class IpnController extends Controller
             $save->WriteLog('napay','ipn','Paypal','Stream ok.');
 		}
 
-        if (is_array($raw_post_data))
+
+
+
+        if (is_array($raw_post_data)){
+            $save->WriteLog('napay','ipn','Paypal','Is array.');
             $raw_post_array = $raw_post_data;
-        else
+        } else {
+            $save->WriteLog('napay','ipn','Paypal','Is not array.'.$raw_post_data);
             $raw_post_array = explode('&', $raw_post_data);
+        }
 
-
+        $save->WriteLog('napay','ipn','Paypal',"echo<pre>".$raw_post_data."</pre>");
+        $save->WriteLog('napay','ipn','Paypal',"raw_post_data<pre>".print_r($raw_post_data,true)."</pre>");
         $save->WriteLog('napay','ipn','Paypal',"raw_post_array<pre>".print_r($raw_post_array,true)."</pre>");
 
-		$payPalPOST = array();
+$save->WriteLog('napay','ipn','Paypal',"test<pre>".print_r($raw_post_array[5],true)."</pre>");
+
+        // $save->WriteLog('napay','ipn','Paypal',"var_dump<pre>".var_dump($raw_post_array,true)."</pre>");
+
+		$PPPOST = array();
 		foreach ($raw_post_array as $keyval) {
 		    $keyval = explode('=', $keyval);
 		    if (count($keyval) == 2) {
@@ -1045,11 +1056,12 @@ class IpnController extends Controller
 					   $keyval[1] = str_replace('+', '%2B', $keyval[1]);
 				    }
 			    }
-			    $payPalPOST[$keyval[0]] = urldecode($keyval[1]);
+			    $PPPOST[$keyval[0]] = urldecode($keyval[1]);
 		    }
 		}
 
-        $save->WriteLog('napay','ipn','Paypal',"payPalPOST<pre>".print_r($payPalPOST,true)."</pre>");
+        $save->WriteLog('napay','ipn','Paypal',"PPPOST<pre>".print_r($PPPOST,true)."</pre>");
+        exit;
 
 		// Build the body of the verification post request, adding the _notify-validate command.
         $req = 'cmd=_notify-validate';
@@ -1057,7 +1069,7 @@ class IpnController extends Controller
         if (function_exists('get_magic_quotes_gpc')) {
             $get_magic_quotes_exists = true;
         }
-        foreach ($payPalPOST as $key => $value) {
+        foreach ($PPPOST as $key => $value) {
             if ($get_magic_quotes_exists == true && get_magic_quotes_gpc() == 1) {
                 $value = urlencode(stripslashes($value));
             } else {
@@ -1187,10 +1199,9 @@ class IpnController extends Controller
  		      )
  		);
 
-        $save->WriteLog('napay','ipn','Paypal',"PayPal step 2 ok");
+        $save->WriteLog('napay','ipn','Paypal',"PayPal setconfig ok");
 
-
-        $paymentId = $payPalPOST['txn_id'];
+        $paymentId = $PPPOST['txn_id'];
 
         $save->WriteLog('napay','ipn','Paypal',"paymentId is: ".$paymentId);
 

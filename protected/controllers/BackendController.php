@@ -310,17 +310,17 @@ class BackendController extends Controller
 			// id pos dell'associazione è sempre 0
 			$id_pos = 0 ;
 
-				$folder = Yii::app()->basePath . '/privatekeys/';
-				$pairings = Pairings::model()->findByAttributes(array('id_pos'=>$id_pos));
+			$folder = Yii::app()->basePath . '/privatekeys/';
+			$pairings = Pairings::model()->findByAttributes(array('id_pos'=>$id_pos));
 				// echo '<pre>'.print_r($folder.$pairings->sin,true).'</pre>';
 				// exit;
 
-				$privatekeyFile = $folder.$pairings->sin.".pri";
-				if (true === file_exists($privatekeyFile)){
-					$this->checkBtcpayserverPayment($item);
-				}else{
-					$response['message'] = 'The requested Private Key does not exist on this Server!';
-				}
+			$privatekeyFile = $folder.$pairings->sin.".pri";
+			if (true === file_exists($privatekeyFile)){
+				$this->checkBtcpayserverPayment($item);
+			}else{
+				$response['message'] = 'The requested Private Key does not exist on this Server!';
+			}
 
 		}
 
@@ -355,12 +355,12 @@ class BackendController extends Controller
 		$btcpay = Yii::app()->params['libsPath'] . '/gateways/btcpayserver-php-v1/Btcpay/Autoloader.php';
 
 		if (true === file_exists($btcpay) &&
-				true === is_readable($btcpay))
+			true === is_readable($btcpay))
 		{
-				require_once $btcpay;
-				\Btcpay\Autoloader::register();
+			require_once $btcpay;
+			\Btcpay\Autoloader::register();
 		} else {
-				throw new Exception('Btcpay Server Library could not be loaded');
+			throw new Exception('Btcpay Server Library could not be loaded');
 		}
 
 

@@ -11,6 +11,8 @@ class SiteController extends Controller
 {
 	public function init()
 	{
+		// echo crypt::Decrypt("TThCOGZaL3pOb2xqbmI4bVJ1b2RtZz09");
+		// exit;
 
 	}
 

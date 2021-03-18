@@ -17,9 +17,10 @@
  * NOTE, this file must be saved in UTF-8 encoding.
  */
 return array (
-  'Insert key for encrypting file system storage' => 'Inserisci una chiave per cruptare il File system Storage',
-  'Welcome to' => 'Benvenuto su',
-  'If you set the time to zero the alarm will not be activated.' => 'Impostando il tempo a zero l\'allarme non verrà attivato.',
+    'Paypal invoice payment is completed.' => 'Il pagamento della fattura Paypal è stato completato.',
+    'Insert key for encrypting file system storage' => 'Inserisci una chiave per cruptare il File system Storage',
+    'Welcome to' => 'Benvenuto su',
+    'If you set the time to zero the alarm will not be activated.' => 'Impostando il tempo a zero l\'allarme non verrà attivato.',
     'Save application on Homepage'=>'Salva il Wallet sulla homepage',
     'save'=>'salva',
     'If you wish to change your profile, please do it by Napay App.' => 'Per cambiare il tuo profilo, usa l\'applicazione Napay.',

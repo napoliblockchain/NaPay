@@ -1042,7 +1042,7 @@ class IpnController extends Controller
         $save->WriteLog('napay','ipn','Paypal',"raw_post_data<pre>".print_r($raw_post_data,true)."</pre>");
         $save->WriteLog('napay','ipn','Paypal',"raw_post_array<pre>".print_r($raw_post_array,true)."</pre>");
 
-$save->WriteLog('napay','ipn','Paypal',"test<pre>".print_r($raw_post_array[5],true)."</pre>");
+// $save->WriteLog('napay','ipn','Paypal',"test<pre>".print_r($raw_post_array[5],true)."</pre>");
 
         // $save->WriteLog('napay','ipn','Paypal',"var_dump<pre>".var_dump($raw_post_array,true)."</pre>");
 
@@ -1060,8 +1060,8 @@ $save->WriteLog('napay','ipn','Paypal',"test<pre>".print_r($raw_post_array[5],tr
 		    }
 		}
 
-        $save->WriteLog('napay','ipn','Paypal',"PPPOST<pre>".print_r($PPPOST,true)."</pre>");
-        exit;
+        // $save->WriteLog('napay','ipn','Paypal',"PPPOST<pre>".htmlspecialchars(print_r($PPPOST,true))."</pre>");
+        // exit;
 
 		// Build the body of the verification post request, adding the _notify-validate command.
         $req = 'cmd=_notify-validate';

@@ -1301,7 +1301,7 @@ class IpnController extends Controller
         $pagamenti->importo = $payment->transactions[0]->getAmount()->total;
         $yearEnd = date('Y-m-d', strtotime('last day of december'));
         if ($payment->transactions[0]->related_resources[0]->sale->state == 'completed'){
-            $pagamenti->status = 'complete';
+            $pagamenti->status = 'paid';
         	$pagamenti->data_scadenza	= $yearEnd;
         }
 
@@ -1321,7 +1321,7 @@ class IpnController extends Controller
             'id_user' => $pagamenti->id_user,
 			'id_tocheck' => $pagamenti->id_pagamento,
 			'status' => $pagamenti->status,
-			'description' => ' ', //. $pagamenti->item_desc,
+			'description' => Yii::t('lang','Paypal invoice payment is completed.'), //. $pagamenti->item_desc,
 			// 'url' => Yii::app()->createUrl("pagamenti/view")."&id=".crypt::Encrypt($pagamenti->id_pagamento),
             // La URL non deve comprendere l'hostname in quanto deve essere raggiungibile da più applicazioni
             'url' => 'index.php?r=pagamenti/view&id='.crypt::Encrypt($pagamenti->id_pagamento),

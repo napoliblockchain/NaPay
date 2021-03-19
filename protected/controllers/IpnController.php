@@ -1316,32 +1316,28 @@ class IpnController extends Controller
             $save->WriteLog('napay','ipn','Paypal',"pagamenti transaction updated.");
         }
 
-		//QUINDI INVIO UN MESSAGGIO DI NOTIFICA
-		$notification = array(
-			'type_notification' => 'fattura',
-			// 'id_merchant' => Merchants::model()->findByAttributes(array(
-            //     'id_user'=>$pagamenti->id_user,
-            //     'deleted'=>'0',
-            // )->id_merchant),
-            'id_user' => $pagamenti->id_user,
-			'id_tocheck' => $pagamenti->id_pagamento,
-			'status' => $pagamenti->status,
-			'description' => Yii::t('lang','Paypal invoice payment is completed.').' ('.$paymentId.')', //. $pagamenti->item_desc,
-			// 'url' => Yii::app()->createUrl("pagamenti/view")."&id=".crypt::Encrypt($pagamenti->id_pagamento),
-            // La URL non deve comprendere l'hostname in quanto deve essere raggiungibile da più applicazioni
-            'url' => 'index.php?r=pagamenti/view&id='.crypt::Encrypt($pagamenti->id_pagamento),
-			'timestamp' => time(),
-			'price' => $pagamenti->importo,
-			'deleted' => 0,
-		);
-        Push::Send($save->Notification($notification,true),'dashboard');
+        // invio notifica solo in caso non sia già stato aggiornato il db
+        if ($pagamenti->status != 'paid'){
+            //QUINDI INVIO UN MESSAGGIO DI NOTIFICA
+            $notification = array(
+                'type_notification' => 'fattura',
+                'id_user' => $pagamenti->id_user,
+                'id_tocheck' => $pagamenti->id_pagamento,
+                'status' => $pagamenti->status,
+                'description' => Yii::t('lang','Paypal invoice payment is completed.').' ('.$paymentId.')', //. $pagamenti->item_desc,
+                'url' => 'index.php?r=pagamenti/view&id='.crypt::Encrypt($pagamenti->id_pagamento),
+                'timestamp' => time(),
+                'price' => $pagamenti->importo,
+                'deleted' => 0,
+            );
+            Push::Send($save->Notification($notification,true),'dashboard');
 
-        //QUINDI INVIO UNa mail
-        $this->notifyMail($pagamenti->id_user,$pagamenti->id_invoice_bps);
+            //QUINDI INVIO UNa mail
+            $this->notifyMail($pagamenti->id_user,$pagamenti->id_invoice_bps);
 
-		//ADESSO POSSO USCIRE CON UN MESSAGGIO POSITIVO ;^)
-        // $save->WriteLog('napay','ipn','Paypal'," : End: IPN received for Paypal transaction ".$invoice['Id']." . Status = " .$invoice['Status']." Price = ". $invoice['btcPrice']. " Paid = ".$invoice['btcPaid']);
-        $save->WriteLog('napay','ipn','Paypal',"IPN for Paypal transaction completed.");
+            //ADESSO POSSO USCIRE CON UN MESSAGGIO POSITIVO ;^)
+            $save->WriteLog('napay','ipn','Paypal',"IPN for Paypal transaction completed.");
+        }
 
 		//Respond with HTTP 200
 		header("HTTP/1.1 200 OK");

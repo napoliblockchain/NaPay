@@ -1128,7 +1128,12 @@ class IpnController extends Controller
 
 
         if($pagamenti===null){
-            $save->WriteLog('napay','ipn','Paypal',"The requested Paypal Payment invoice (".$paypal_txn_id.") does not exist.",true);
+            $save->WriteLog('napay','ipn','Paypal',"The requested Paypal Payment invoice (".$paypal_txn_id.") does not exist.");
+            $save->WriteLog('napay','ipn','Paypal',"IPN for Paypal transaction cexit with HTTP/1.1 200 OK");
+    		//Respond with HTTP 200
+    		header("HTTP/1.1 200 OK");
+            exit;
+
             // se non esiste il pagamento potrebbe essere una donazione
             // per cui devo generare lo stesso una ricevuta ...
             // quindi aggiorno il progressivo dei pagamenti
@@ -1332,7 +1337,7 @@ class IpnController extends Controller
         Push::Send($save->Notification($notification,true),'dashboard');
 
         //QUINDI INVIO UNa mail
-        $this->notifyMail($pagamenti->id_user,$pagamenti->id_invoice_bps);
+        //$this->notifyMail($pagamenti->id_user,$pagamenti->id_invoice_bps);
 
 		//ADESSO POSSO USCIRE CON UN MESSAGGIO POSITIVO ;^)
         // $save->WriteLog('napay','ipn','Paypal'," : End: IPN received for Paypal transaction ".$invoice['Id']." . Status = " .$invoice['Status']." Price = ". $invoice['btcPrice']. " Paid = ".$invoice['btcPaid']);

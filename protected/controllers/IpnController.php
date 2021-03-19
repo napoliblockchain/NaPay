@@ -1337,7 +1337,7 @@ class IpnController extends Controller
         Push::Send($save->Notification($notification,true),'dashboard');
 
         //QUINDI INVIO UNa mail
-        //$this->notifyMail($pagamenti->id_user,$pagamenti->id_invoice_bps);
+        $this->notifyMail($pagamenti->id_user,$pagamenti->id_invoice_bps);
 
 		//ADESSO POSSO USCIRE CON UN MESSAGGIO POSITIVO ;^)
         // $save->WriteLog('napay','ipn','Paypal'," : End: IPN received for Paypal transaction ".$invoice['Id']." . Status = " .$invoice['Status']." Price = ". $invoice['btcPrice']. " Paid = ".$invoice['btcPaid']);

@@ -58,19 +58,20 @@ class UserIdentity extends CUserIdentity
 
 			// echo '<pre>'.print_r($UserPrivileges,true).'</pre>';
 			// exit;
-			// se SEi amministratore non fai il controllo
-			if ($UserPrivileges[$record->id_users_type] != 20){
-				/*
-				*	VERIFICA SE IL SOCIO HA PAGATO LA QUOTA D'ISCRIZIONE
-				*/
+
+			// set this flag true if you don't want check payuments
+			$tmpFlagDisableCheckPayments = true;
+			/*
+			*	VERIFICA SE IL SOCIO HA PAGATO LA QUOTA D'ISCRIZIONE
+			*/
+			// ma se SEi amministratore non fai il controllo
+			if ($UserPrivileges[$record->id_users_type] != 20 && $tmpFlagDisableCheckPayments == false){
 				$timestamp = time();
 				$criteria = new CDbCriteria();
 				$criteria->compare('id_user',$record->id_user, false);
 
-				//$provider = Pagamenti::model()->OrderByIDDesc()->findAll($criteria);
 				$provider = Pagamenti::model()->Paid()->OrderByIDDesc()->findAll($criteria);
 				if ($provider === null){
-					//$expiration_membership = $timestamp;
 					$this->errorCode=self::ERROR_USERNAME_NOT_PAYER;
 					$save->WriteLog('napay','useridentity','authenticate','User not payer: '.$this->username);
 					return !$this->errorCode;

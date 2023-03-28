@@ -6,7 +6,7 @@ Yii::import('libs.NaPacks.WebApp');
 Yii::import('libs.NaPacks.SaveModels'); // viene prima di Save
 Yii::import('libs.NaPacks.Save');
 Yii::import('libs.NaPacks.Push');
-Yii::import('libs.NaPacks.Utils');
+Yii::import('libs.Utils');
 
 class UsersController extends Controller
 {

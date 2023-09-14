@@ -5,7 +5,7 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
-    'name' => 'Napay Backoffice',
+    'name' => 'POS Backoffice',
     'language' => 'it-IT', // Specifies which language the application is targeted to
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
@@ -61,6 +61,10 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'rules' => [
+                // Regola per le API v1
+                'api/v1/<controller:\w+>/<action:\w+>' => 'api/v1/<controller>/<action>',
+            ],
         ],
     ],
     'params' => $params,

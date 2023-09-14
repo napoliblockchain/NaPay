@@ -196,13 +196,13 @@ class SiteController extends Controller
     public function actionSignup()
     {
         if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+            return $this->redirect(['site/index']);
         }
 
         /** 
          * verifico se esiste almeno 1 utente, nel caso lo rispedisco a login
          */
-        $test_user = Users::findOne(1);
+        // $test_user = Users::findOne(1);
         /** TODO: RIMETTERE IL TEST PER NON PERMETTERE REGISTRAZIONE UTENTI */
         // if (null !== $test_user) {
         //     $this->redirect(['site/login']);

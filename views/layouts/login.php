@@ -47,7 +47,7 @@ AppAsset::register($this);
     <header id="header">
         <?php
         NavBar::begin([
-            'brandImage' => '/bundles/site/images/logo.png',
+            'brandImage' => '/bundles/site/images/logobrand-294.png',
             'brandUrl' => Url::to(['site/index'], true),
             'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
         ]);

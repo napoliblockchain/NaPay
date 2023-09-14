@@ -12,19 +12,6 @@ return [
     'senderName' => 'Example.com mailer',
 
     /**
-     * Configurazione invio email
-     */
-    'mail_name' => $secrets['defaultTimeZone'],
-    'mail_support' => $secrets['defaultTimeZone'],
-    'mail_host' => $secrets['defaultTimeZone'], // SMTP ENDPOINT
-    'mail_adminusername' => $secrets['defaultTimeZone'], // indirizzo mail nella firma
-    'mail_username' => $secrets['defaultTimeZone'],
-    'mail_password' => $secrets['defaultTimeZone'],
-    'mail_port' => $secrets['defaultTimeZone'],
-    'useFileTransport' => $secrets['defaultTimeZone'], // set false in production
-    'encryption' => $secrets['defaultTimeZone'],
-
-    /**
      * app settings
      */
     'bsVersion' => '5.x', // this will set globally `bsVersion` to Bootstrap 5.x for all Krajee Extensions
@@ -61,4 +48,10 @@ return [
      */
     'secret_hash_key' => $secrets['secret_hash_key'],
 
+    /**
+     * set webhook logs 
+     */
+    'webHookLogs' => true,
+
+   
 ];

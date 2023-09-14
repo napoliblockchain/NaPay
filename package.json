@@ -1,0 +1,21 @@
+{
+    "name": "yii2-app-basic",
+    "keywords": [
+        "yii2",
+        "framework",
+        "basic",
+        "project template"
+    ],
+    "scripts": {
+        "generate-sw": "workbox generate:sw",
+        "update-sw": "workbox inject:manifest",
+        "web-push": "web-push",
+        "vapid-keys": "web-push generate-vapid-keys"
+    },
+    "devDependencies": {
+        "workbox-cli": "^2.1.3"
+    },
+    "dependencies": {
+        "web-push": "^3.5.0"
+    }
+}

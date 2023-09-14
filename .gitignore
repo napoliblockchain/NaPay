@@ -1,34 +1,30 @@
-assets/*
-!assets/.gitignore
+# nodejs modules
+node_modules
+package-lock.json
 
-protected/runtime/*
-!protected/runtime/.gitignore
+# windows thumbnail cache
+Thumbs.db
 
-protected/data/*.db
+# composer vendor dir
+/vendor
 
-protected/log/*
-!protected/log/.gitignore
+# runtime
+runtime/
 
-protected/qrcodes/*
-!protected/qrcodes/.gitignore
+# composer lock
+composer.lock
 
-protected/privatekeys/*
-!protected/privatekeys/.gitignore
 
-custom/*
-!custom/.gitignore
+tests/_output/*
+tests/_support/_generated
 
-protected/verbali/*
-!protected/verbali/.gitignore
+#vagrant folder
+/.vagrant
 
-protected/uploads/*
-!protected/uploads/.gitignore
+# add service worker file
+web/sw.js
 
-protected/products/*
-!protected/products/.gitignore
-
-*.log
-*.db
-
-ChangeLog.md
-MysqlbyVersions.md
+# altri ignore
+.env
+.stignore
+.vscode/

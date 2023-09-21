@@ -6,3 +6,14 @@
     <br>
 </p>
 
+## Update vendor folder
+
+```bash
+php composer.phar update 
+```
+
+## Install Workbox
+
+```bash
+npm install --save-dev workbox-cli@^2
+```

@@ -18,7 +18,7 @@ class SignupForm extends Model
     const PROVIDER_SOURCE = 'SELF';
 
     public $username;
-    // public $password;
+    public $password;
     public $first_name;
     public $last_name;
     public $email;
@@ -49,9 +49,9 @@ class SignupForm extends Model
                 'message' => Yii::t('app', 'La mail inserita è già stata utilizzata.')
             ],
             [['username', 'first_name', 'last_name', 'email' ], 'required'],
-            // ['password', 'string', 'min' => 8],
+            ['password', 'string', 'min' => 8],
 
-            // ['repeat_password', 'compare', 'compareAttribute'=>'password'],
+            ['repeat_password', 'compare', 'compareAttribute'=>'password'],
 
         ];
     }
@@ -69,8 +69,8 @@ class SignupForm extends Model
             'first_name' => Yii::t('app', 'Nome'),
             'last_name' => Yii::t('app', 'Cognome'),
             'email' => Yii::t('app', 'Email'),
-            // 'password' => Yii::t('app', 'Password'),
-            // 'repeat_password' => Yii::t('app', 'Conferma password'),
+            'password' => Yii::t('app', 'Password'),
+            'repeat_password' => Yii::t('app', 'Conferma password'),
         ];
     }
 
@@ -96,6 +96,7 @@ class SignupForm extends Model
             $user = new Users([
                 'username' => $this->username,
                 'email' => $this->email,
+                'password' => \Yii::$app->getSecurity()->generatePasswordHash($this->password),
                 'first_name' => $this->first_name,
                 'last_name' => $this->last_name,
                 'oauth_provider' => self::PROVIDER_SOURCE,

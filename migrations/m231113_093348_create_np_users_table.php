@@ -2,7 +2,10 @@
 
 use yii\db\Migration;
 
-class m230921_155549_create_table_np_users extends Migration
+/**
+ * Handles the creation of table `{{%np_users}}`.
+ */
+class m231113_093348_create_np_users_table extends Migration
 {
     public function safeUp()
     {
@@ -16,20 +19,10 @@ class m230921_155549_create_table_np_users extends Migration
             [
                 'id' => $this->primaryKey(),
                 'username' => $this->string()->notNull(),
-                'users_type_id' => $this->integer()->notNull(),
-                'carica_id' => $this->integer()->notNull(),
                 'email' => $this->string()->notNull(),
                 'password' => $this->string()->notNull(),
-                'ga_secret_key' => $this->string(16),
                 'first_name' => $this->string(256)->notNull(),
                 'last_name' => $this->string(256)->notNull(),
-                'corporate' => $this->string(16),
-                'denomination' => $this->string(250),
-                'vat' => $this->string(250)->notNull(),
-                'address' => $this->string(250)->notNull(),
-                'cap' => $this->string(250)->notNull(),
-                'city' => $this->string(250)->notNull(),
-                'country' => $this->string(250)->notNull(),
                 'oauth_provider' => $this->string(20)->notNull(),
                 'oauth_uid' => $this->string(128)->notNull(),
                 'authKey' => $this->string(256)->notNull(),
@@ -41,6 +34,8 @@ class m230921_155549_create_table_np_users extends Migration
             ],
             $tableOptions
         );
+
+        $this->addForeignKey('fk-user-privilege_id', 'np_users', 'privilege_id', 'privileges', 'id', 'CASCADE', 'CASCADE');
 
     }
 

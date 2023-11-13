@@ -65,8 +65,25 @@ $this->title = 'Registrazione';
                                     ->label(false)
                                     ->textInput(['placeholder' => $model->getAttributeLabel('email')]) ?>
 
+                                <?= $form->field($model, 'password', [
+                                    'options' => ['class' => 'form-group has-feedback'],
+                                    'inputTemplate' => '{input}<div class="input-group-append"><div class="input-group-text"><span class="fas fa-lock"></span></div></div>',
+                                    'template' => '{beginWrapper}{input}{error}{endWrapper}',
+                                    'wrapperOptions' => ['class' => 'input-group mb-3']
+                                ])
+                                    ->label(false)
+                                    ->passwordInput(['placeholder' => $model->getAttributeLabel('password')]) ?>
 
-                               
+                                <?= $form->field($model, 'repeat_password', [
+                                    'options' => ['class' => 'form-group has-feedback'],
+                                    'inputTemplate' => '{input}<div class="input-group-append"><div class="input-group-text"><span class="fas fa-lock"></span></div></div>',
+                                    'template' => '{beginWrapper}{input}{error}{endWrapper}',
+                                    'wrapperOptions' => ['class' => 'input-group mb-3']
+                                ])
+                                    ->label(false)
+                                    ->passwordInput(['placeholder' => $model->getAttributeLabel('repeat_password')]) ?>
+
+
 
                                 <div class="row">
                                     <div class="col-12">

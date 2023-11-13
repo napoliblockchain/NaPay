@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Handles the creation of table `{{%auth}}`.
  */
-class m230306_104104_create_auth_table extends Migration
+class m231113_093404_create_auth_table extends Migration
 {
     /**
      * {@inheritdoc}

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# change php version
+update-alternatives --config php
+
 # Update Service Worker
 npm run update-sw
 

@@ -219,6 +219,7 @@ class SiteController extends Controller
             if ($model->load(Yii::$app->request->post())) {
                 if ($model->signup()) {
                     Yii::$app->session->setFlash('success','Utente registrato con successo');
+                    return $this->redirect(['site/index']);
                 }
             } else {
                 $p = '<p>C\'è stato un errore.</p>';

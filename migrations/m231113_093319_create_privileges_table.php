@@ -5,15 +5,14 @@ use yii\db\Migration;
 /**
  * Handles the creation of table `{{%privileges}}`.
  */
-class m230312_123913_create_privileges_table extends Migration
+class m231113_093319_create_privileges_table extends Migration
 {
     /**
      * ### Ruoli utente dal README
      * 
-     * 1 - Webmaster        ROLE_POS_WEBMASTER       50  => Full control su applicazione
-     * 3 - Administrator    ROLE_POS_ADMIN           40  => Full control sui dati di tutti gli esercenti
-     * 4 - Senior           ROLE_POS_SENIOR_VIEWER   30  => Visualizza tutti i propri negozi/pos/invoices
-     * 2 - Junior           ROLE_POS_JUNIOR_VIEWER    0  => Visualizza solo il negozio/pos/invoice assegnati
+     * 1 - Administrator    ROLE_ADMIN       50  => Full control su applicazione
+     * 2 - User             ROLE_USER         0  => Full control sui dati di tutti gli esercenti
+     * 3 - Merchant         ROLE_MERCHANT    20  => Visualizza tutti i propri negozi/pos/invoices
      */
 
     /**
@@ -31,19 +30,19 @@ class m230312_123913_create_privileges_table extends Migration
         $this->insert('privileges', [
             'description' => 'Administrator',
             'level' => 50,
-            'codice_ruolo' => 'ROLE_POS_ADMIN'
+            'codice_ruolo' => 'ROLE_ADMIN'
         ]);
 
         $this->insert('privileges', [
-            'description' => 'Junior',
+            'description' => 'User',
             'level' => 0,
-            'codice_ruolo' => 'ROLE_POS_JUNIOR_VIEWER'
+            'codice_ruolo' => 'ROLE_USER'
         ]);
 
         $this->insert('privileges', [
-            'description' => 'Senior',
+            'description' => 'Merchant',
             'level' => 30,
-            'codice_ruolo' => 'ROLE_POS_SENIOR_VIEWER'
+            'codice_ruolo' => 'ROLE_MERCHANT'
         ]);
     }
 

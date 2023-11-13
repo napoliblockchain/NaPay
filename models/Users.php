@@ -11,6 +11,7 @@ use yii\helpers\ArrayHelper;
  * @property int $id
  * @property string $username
  * @property string $email
+ * @property string $password
  * @property string $first_name
  * @property string $last_name
  * @property string $oauth_provider
@@ -21,13 +22,9 @@ use yii\helpers\ArrayHelper;
  * @property string $picture
  * @property int $privilege_id
  * @property int $is_active
- * @property int|null $merchant_id
- * @property int|null $store_id
  *
  * @property Auth[] $auths
- * @property Merchants $merchant
  * @property Privileges $privilege
- * @property Stores $store
  */
 class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
@@ -52,16 +49,14 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return [
             [['username', 'email', 'first_name', 'last_name', 'oauth_provider', 'oauth_uid', 'authKey', 'accessToken', 'jwt', 'picture', 'privilege_id', 'is_active'], 'required'],
             [['jwt'], 'string'],
-            [['privilege_id', 'is_active', 'merchant_id', 'store_id'], 'integer'],
+            [['privilege_id', 'is_active',], 'integer'],
             [['username', 'email'], 'string', 'max' => 60],
             [['first_name', 'last_name', 'authKey'], 'string', 'max' => 256],
             [['oauth_provider'], 'string', 'max' => 20],
             [['oauth_uid'], 'string', 'max' => 128],
             [['accessToken'], 'string', 'max' => 2048],
             [['picture'], 'string', 'max' => 512],
-            [['merchant_id'], 'exist', 'skipOnError' => true, 'targetClass' => Merchants::class, 'targetAttribute' => ['merchant_id' => 'id']],
             [['privilege_id'], 'exist', 'skipOnError' => true, 'targetClass' => Privileges::class, 'targetAttribute' => ['privilege_id' => 'id']],
-            [['store_id'], 'exist', 'skipOnError' => true, 'targetClass' => Stores::class, 'targetAttribute' => ['store_id' => 'id']],
         ];
     }
 
@@ -84,8 +79,6 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'picture' => Yii::t('app', 'Picture'),
             'privilege_id' => Yii::t('app', 'Profilo'),
             'is_active' => Yii::t('app', 'Abilitato'),
-            'merchant_id' => Yii::t('app', 'Esercente'),
-            'store_id' => Yii::t('app', 'Negozio'),
         ];
     }
 
@@ -117,28 +110,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return $this->hasOne(Privileges::class, ['id' => 'privilege_id']);
     }
 
-    /**
-     * Gets query for [[Merchants]].
-     *
-     * @return \yii\db\ActiveQuery|\app\models\query\MerchantsQuery
-     */
-    public function getMerchant()
-    {
-        return $this->hasOne(Merchants::class, ['id' => 'merchant_id']);
-    }
-
-    /**
-     * Gets query for [[Stores]].
-     *
-     * @return \yii\db\ActiveQuery|\app\models\query\StoresQuery
-     */
-    public function getStore()
-    {
-        return $this->hasOne(Stores::className(), ['id' => 'store_id']);
-    }
-
-    
-
+   
     /**
      * {@inheritdoc}
      * @return \app\models\query\UsersQuery the active query used by this AR class.

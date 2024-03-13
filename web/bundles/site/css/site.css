@@ -1,3 +1,21 @@
+body {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: url(/bundles/site/images/BG.svg) no-repeat center top;
+    position: fixed;
+    z-index: -1;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+    overflow-y: auto;
+    scroll-behavior: auto;
+}
+
+
 /*
  --------------- fix input dark mode----------------------
 */

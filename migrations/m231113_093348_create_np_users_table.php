@@ -15,7 +15,7 @@ class m231113_093348_create_np_users_table extends Migration
         }
 
         $this->createTable(
-            '{{%np_users}}',
+            '{{%users}}',
             [
                 'id' => $this->primaryKey(),
                 'username' => $this->string()->notNull(),
@@ -27,20 +27,28 @@ class m231113_093348_create_np_users_table extends Migration
                 'oauth_uid' => $this->string(128)->notNull(),
                 'authKey' => $this->string(256)->notNull(),
                 'accessToken' => $this->string(2048)->notNull(),
-                'jwt' => $this->text()->notNull(),
                 'picture' => $this->string(512)->notNull(),
                 'privilege_id' => $this->integer()->notNull(),
+                'is_merchant' => $this->integer()->defaultValue(0),
                 'is_active' => $this->integer()->notNull(),
             ],
             $tableOptions
         );
 
-        $this->addForeignKey('fk-user-privilege_id', 'np_users', 'privilege_id', 'privileges', 'id', 'CASCADE', 'CASCADE');
+        $this->addForeignKey(
+            'fk-user-privilege_id', 
+            'users', 
+            'privilege_id', 
+            'privileges', 
+            'id', 
+            'CASCADE', 
+            'CASCADE'
+        );
 
     }
 
     public function safeDown()
     {
-        $this->dropTable('{{%np_users}}');
+        $this->dropTable('{{%users}}');
     }
 }

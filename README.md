@@ -23,7 +23,7 @@ npm install --save-dev workbox-cli@^2
 * ### Ruoli utente 
 *
 * 1 - Administrator    ROLE_ADMIN       50  => Full control su applicazione
-* 2 - User             ROLE_USER         0  => Full control sui dati di tutti gli esercenti
+* 2 - User             ROLE_USER         0  => User
 * 3 - Merchant         ROLE_MERCHANT    20  => Visualizza tutti i propri negozi/pos/invoices
 */
 ```

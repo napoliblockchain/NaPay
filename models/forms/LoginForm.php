@@ -18,7 +18,6 @@ class LoginForm extends Model
 {
     public $username;
     public $password;
-    public $otpCode;
 
     private $_user = false;
 
@@ -30,9 +29,10 @@ class LoginForm extends Model
     {
         return [
             // username and password are both required
-            [['username', 'password', 'otpCode'], 'required'],
+            [['username', 'password'], 'required'],
+
             // password is validated by validatePassword()
-            ['otpCode', 'validateFields'],
+            ['password', 'validatePassword'],
         ];
     }
 
@@ -57,14 +57,17 @@ class LoginForm extends Model
      * @param string $attribute the attribute currently being validated
      * @param array $params the additional name-value pairs given in the rule
      */
-    public function validateFields($attribute, $params)
+    public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
 
-            if (!$user) {
-                $this->addError($attribute, Yii::t('app','Nome utente, password o codice OTP errati.'));
-                return false;
+            //echo "<pre>".print_r($user,true)."</pre>";exit;
+
+            if (!$user || !$user->validatePassword($this->password)) {
+                $this->addError($attribute, Yii::t('app', 'Incorrect username or password.'));
+            } else if (!$user->validateStatus()) {
+                $this->addError($attribute, Yii::t('app', 'User not active.'));
             }
         }
     }
@@ -76,10 +79,12 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
-            // EFFETTUA L'ACCESSO utente
-            $this->onAuthSuccess($this->_user);
-            return true; // !!! don't touch it
+            Yii::$app->user->login($this->_user, 3600 * 24 * 30);
+
+            return $this->_user;
         }
+        // echo "<pre>" . print_r($this->getErrors(), true) . "</pre>";
+        // exit;
         return false;
     }
 
@@ -91,14 +96,9 @@ class LoginForm extends Model
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = Users::doAuth($this->username, $this->password, $this->otpCode);
+            $this->_user = Users::findByUsername($this->username);
         }
 
         return $this->_user;
-    }
-
-    public function onAuthSuccess($userInfo)
-    {
-        (new AuthHandler($userInfo))->handle();
     }
 }

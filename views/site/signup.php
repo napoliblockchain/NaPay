@@ -19,7 +19,7 @@ $this->title = 'Registrazione';
                     <div class="col-lg-6 align-self-end">
                         <div class="card text-left">
                             <div class="card-header text-center">
-                                <h4 class="login-box-msg"><?= Yii::t('app', 'Registrazione Account Amministratore') ?></h4>
+                                <h4 class="login-box-msg"><?= Yii::t('app', 'Registrazione Account') ?></h4>
                             </div>
                             <div class="card-body login-card-body text-left" id="loginBody">
 

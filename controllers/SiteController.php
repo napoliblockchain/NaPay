@@ -28,19 +28,22 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout'],
+                'only' => ['logout','dashboard'],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout','dashboard'],
                         'allow' => true,
                         'roles' => ['@'],
+                        'denyCallback' => function ($rule, $action) {
+                            throw new \Exception('You are not allowed to access this page');
+                        }
                     ],
                 ],
             ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'logout' => ['post'],
+                    'logout' => ['get','post'],
                 ],
             ],
         ];
@@ -54,6 +57,11 @@ class SiteController extends Controller
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
+                'layout' => Yii::$app->user->isGuest ? 'login' : 'main',
+            ],
+            'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
     }

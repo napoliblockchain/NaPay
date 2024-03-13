@@ -33,7 +33,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?= Yii::t('app', 'Totale Esercenti') ?>
                                     </span>
                                     <span class="info-box-number">
-                                        <?= $dataMerchants->totalCount ?>
                                         <!-- <small>%</small> -->
                                     </span>
                                 </div>
@@ -58,7 +57,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?= Yii::t('app', 'Totale Negozi') ?>
                                     </span>
                                     <span class="info-box-number">
-                                        <?= $dataStores->totalCount ?>
                                         <!-- <small>%</small> -->
                                     </span>
                                 </div>
@@ -82,7 +80,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?= Yii::t('app', 'Totale Pos') ?>
                                 </span>
                                 <span class="info-box-number">
-                                    <?= $dataPos->totalCount ?>
                                     <!-- <small>%</small> -->
                                 </span>
                             </div>
@@ -106,7 +103,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?= Yii::t('app', 'Totale Transazioni') ?>
                                 </span>
                                 <span class="info-box-number">
-                                    <?= $dataInvoices->totalCount ?>
                                     <!-- <small>%</small> -->
                                 </span>
                             </div>
@@ -124,23 +120,21 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="container-fluid">
                 <div class="row">
                     <div class="<?php echo (User::can(40)) ? 'col-lg-6' : 'col-md-12'; ?>">
-                        <?php echo $this->render('dashboard/invoices', ['dataInvoices' => $dataInvoices]); ?>
+                        <?php //echo $this->render('dashboard/invoices', ['dataInvoices' => $dataInvoices]); ?>
                     </div>
                     <?php if (User::can(40)) : ?>
                         <div class="col-lg-6 col-md-12 ">
-                            <?php echo $this->render('dashboard/merchants', ['dataMerchants' => $dataMerchants]); ?>
+                            <?php //echo $this->render('dashboard/merchants', ['dataMerchants' => $dataMerchants]); ?>
                         </div>
                     <?php endif; ?>
                     <?php if (User::can(30)) : ?>
                         <div class="col-lg-6 col-md-12 ">
-                            <?php echo $this->render('dashboard/stores', ['dataStores' => $dataStores]); ?>
+                            <?php //echo $this->render('dashboard/stores', ['dataStores' => $dataStores]); ?>
                         </div>
                     <?php endif; ?>
                     <div class="col-lg-6 col-md-12 ">
-                        <?php echo $this->render('dashboard/pos', ['dataPos' => $dataPos]); ?>
+                        <?php //echo $this->render('dashboard/pos', ['dataPos' => $dataPos]); ?>
                     </div>
-
-
                 </div>
             </div>
         </div>

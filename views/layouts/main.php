@@ -3,6 +3,7 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+use app\widgets\Alert;
 
 \hail812\adminlte3\assets\FontAwesomeAsset::register($this);
 \hail812\adminlte3\assets\AdminLteAsset::register($this);
@@ -55,6 +56,7 @@ if (isset($_COOKIE['collapsed'])) {
         <?= $this->render('snackbar') ?>
 
         <!-- Content Wrapper. Contains page content -->
+        
         <?= $this->render('content', ['content' => $content, 'assetDir' => $assetDir]) ?>
         <!-- /.content-wrapper -->
 

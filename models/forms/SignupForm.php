@@ -103,7 +103,6 @@ class SignupForm extends Model
                 'oauth_uid' => \Yii::$app->security->generateRandomString(),
                 'authKey' => \Yii::$app->security->generateRandomString(),
                 'accessToken' => \Yii::$app->security->generateRandomString(),
-                'jwt' => \Yii::$app->security->generateRandomString(),
                 'picture' => '/bundles/site/images/anonymous.png',
                 'privilege_id' => $privilegio,
                 'is_active' => (null === $test_privilege) ? 1 : 0,

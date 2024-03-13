@@ -10,8 +10,8 @@ use app\components\Crypt;
     <!-- Brand Logo -->
     <a href="<?= Url::to(['site/index'], true) ?>" class="brand-link bg-light ">
         <?=
-        Html::img('@web/bundles/site/images/logopos.png', [
-            'alt' => Yii::$app->name,
+        Html::img('@web/bundles/site/images/logo.png', [
+            'alt' => 'logo',
             'class' => "brand-image elevation-3",
             // 'style' => 'opacity: .8; height: 50px; width: 50px; top: 2.5px; position: absolute;'
         ]) ?>
@@ -44,10 +44,10 @@ use app\components\Crypt;
 
         $items = [
             ['label' => Yii::t('app', 'Dashboard'), 'url' => ['site/index'], 'iconStyle' => 'fas', 'icon' => 'tachometer-alt'],
-            ['label' => Yii::t('app', 'Transazioni'), 'url' => ['invoices/index'], 'iconStyle' => 'fas', 'icon' => 'file-invoice'],
-            ['label' => Yii::t('app', 'Esercenti'), 'url' => ['merchants/index'], 'iconStyle' => 'fas', 'icon' => 'store', 'visible' => User::can(40)], //administrator
+            ['label' => Yii::t('app', 'Esercenti'), 'url' => ['merchants/index'], 'iconStyle' => 'fas', 'icon' => 'store', 'visible' => User::isAdministrator()], //administrator
             ['label' => Yii::t('app', 'Negozi'), 'url' => ['stores/index'], 'iconStyle' => 'fas', 'icon' => 'shopping-cart', 'visible' => User::can(30)],
             ['label' => Yii::t('app', 'Pos'), 'url' => ['pos/index'], 'iconStyle' => 'fas', 'icon' => 'mobile-alt'],
+            ['label' => Yii::t('app', 'Transazioni'), 'url' => ['invoices/index'], 'iconStyle' => 'fas', 'icon' => 'file-invoice'],
             ['label' => Yii::t('app', 'Pannello Admin'), 'url' => ['admin/index'], 'iconStyle' => 'fas', 'icon' => 'cogs', 'visible' => User::can(40)],
                       
             ['label' => 'Developer', 'header' => true, 'visible' => User::isAdministrator()],

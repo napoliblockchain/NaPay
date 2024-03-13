@@ -5,7 +5,7 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
-    'name' => 'POS Backoffice',
+    'name' => 'Napay',
     'language' => 'it-IT', // Specifies which language the application is targeted to
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],

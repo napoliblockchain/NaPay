@@ -4,7 +4,7 @@
 /** @var string $content */
 
 use app\assets\AppAsset;
-use app\widgets\Alert;
+use app\assets\ServiceWorkerAsset;
 use yii\helpers\Url;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
@@ -12,6 +12,7 @@ use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 
 AppAsset::register($this);
+ServiceWorkerAsset::register($this);
 
 ?>
 <?php $this->beginPage() ?>
@@ -47,9 +48,10 @@ AppAsset::register($this);
     <header id="header">
         <?php
         NavBar::begin([
-            'brandImage' => '/bundles/site/images/logobrand-294.png',
+            'brandLabel' => Html::img('/bundles/site/images/logo-60.png') . '<span class="h1 pt-1 ml-3">' . Yii::$app->name . '</span>',
+            // 'brandImage' => '/bundles/site/images/logo-70.png',
             'brandUrl' => Url::to(['site/index'], true),
-            'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
+            'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top valign-center']
         ]);
         echo Nav::widget([
             'options' => ['class' => 'navbar-nav'],
@@ -79,7 +81,6 @@ AppAsset::register($this);
                 <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
             <?php endif ?>
             <?= $content ?>
-            <?= Alert::widget() ?>
         </div>
     </main>
 

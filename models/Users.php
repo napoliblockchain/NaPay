@@ -18,7 +18,6 @@ use yii\helpers\ArrayHelper;
  * @property string $oauth_uid
  * @property string $authKey
  * @property string $accessToken
- * @property string $jwt
  * @property string $picture
  * @property int $privilege_id
  * @property int $is_active
@@ -47,8 +46,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'email', 'first_name', 'last_name', 'oauth_provider', 'oauth_uid', 'authKey', 'accessToken', 'jwt', 'picture', 'privilege_id', 'is_active'], 'required'],
-            [['jwt'], 'string'],
+            [['username', 'email', 'first_name', 'last_name', 'oauth_provider', 'oauth_uid', 'authKey', 'accessToken', 'picture', 'privilege_id', 'is_active'], 'required'],
             [['privilege_id', 'is_active',], 'integer'],
             [['username', 'email'], 'string', 'max' => 60],
             [['first_name', 'last_name', 'authKey'], 'string', 'max' => 256],
@@ -75,7 +73,6 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'oauth_uid' => Yii::t('app', 'OAuth ID'),
             'authKey' => Yii::t('app', 'Auth Key'),
             'accessToken' => Yii::t('app', 'Access Token'),
-            'jwt' => Yii::t('app', 'Jwt'),
             'picture' => Yii::t('app', 'Picture'),
             'privilege_id' => Yii::t('app', 'Profilo'),
             'is_active' => Yii::t('app', 'Abilitato'),
@@ -143,6 +140,16 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->authKey === $authKey;
+    }
+
+    /**
+     * Validates user activation
+     *
+     * @return bool if status is valid for current user
+     */
+    public function validateStatus()
+    {
+        return $this->is_active;
     }
 
     /**

@@ -10,7 +10,8 @@ use yii\filters\VerbFilter;
 use app\models\forms\LoginForm;
 use app\models\forms\SignupForm;
 use app\models\Users;
-use app\components\User;
+use app\models\UserConsensus;
+
 use app\components\Log;
 
 use app\models\search\MerchantsSearch;
@@ -219,6 +220,8 @@ class SiteController extends Controller
         $this->layout = 'login';
 
         $model = new SignupForm();
+        $consensus = new UserConsensus();
+
 
         $post = Yii::$app->request->post();
         // echo "<pre>".print_r($post,true)."</pre>";exit;
@@ -244,6 +247,7 @@ class SiteController extends Controller
         // $model->password = '';
         return $this->render('signup', [
             'model' => $model,
+            'consensus' => $consensus,
         ]);
     }
 

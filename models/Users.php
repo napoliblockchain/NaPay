@@ -37,7 +37,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public static function tableName()
     {
-        return 'np_users';
+        return 'users';
     }
 
     /**

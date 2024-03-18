@@ -27,32 +27,14 @@ $speedPolicy = [
     <div class="row">
         <div class="col-md-12">
             <div class="stores-index">
-                <?php if (Yii::$app->session->hasFlash('success')) : ?>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <?php echo Yii::$app->session->getFlash('success') ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <?php endif; ?>
-                <?php if (Yii::$app->session->hasFlash('error')) : ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <?php echo Yii::$app->session->getFlash('error') ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <?php endif; ?>
+                <?= app\widgets\Alert::widget() ?>
                 <div class="card card-outline card-primary">
                     <div class="card-header">
                         <div class="d-flex flex-row">
                             <h3><?= Html::encode($this->title) ?></h3>
 
-                            <?php if (User::can(40)) : ?>
+                            <?php if (User::can(User::ROLE_MERCHANT)) : ?>
                                 <div class="ml-auto p-1">
-                                    <?= Html::a('<button type="button" class="btn btn-warning">
-                                        <i class="fas fa-plus"></i> ' . Yii::t('app', 'Nuovo negozio') . '
-                                        </button>', ['create']) ?>
-                                </div>
-                            <?php endif; ?>
-                            <?php if (User::can(30)) : ?>
-                                <div class="<?= (User::can(40)) ? '' : 'ml-auto'?> p-1">
                                     <?php $form = ActiveForm::begin([
                                         'id' => 'export-form',
                                         'action' => ['export'],
@@ -65,6 +47,11 @@ $speedPolicy = [
                                         'target' => '_blank'
                                     ]) ?>
                                     <?php ActiveForm::end(); ?>
+                                </div>
+                                <div class="p-1">
+                                    <?= Html::a('<button type="button" class="btn btn-warning">
+                                        <i class="fas fa-plus"></i> ' . Yii::t('app', 'Nuovo negozio') . '
+                                        </button>', ['create']) ?>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -131,7 +118,7 @@ $speedPolicy = [
                                 [
                                     'attribute' => 'storesettings.spread',
                                     'value' => function ($data) {
-                                        return \Yii::$app->formatter->asPercent($data->storesettings->spread /100, 2);
+                                        return \Yii::$app->formatter->asPercent($data->storesettings->spread / 100, 2);
                                     },
                                 ],
                                 // [
@@ -143,7 +130,7 @@ $speedPolicy = [
                                 //     'filter' => $status_list
 
                                 // ],
-                                
+
                                 // [
                                 //     'attribute' => 'bps_storeid',
                                 //     'format' => 'raw',
@@ -152,9 +139,6 @@ $speedPolicy = [
                                 //     },
                                 //     'contentOptions' => ['class' => 'text-break'],
                                 // ],
-                                //'create_date',
-                                //'close_date',
-                                //'historical',
 
 
                                 // ['class' => 'yii\grid\ActionColumn'],

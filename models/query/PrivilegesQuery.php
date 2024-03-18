@@ -14,6 +14,13 @@ class PrivilegesQuery extends \yii\db\ActiveQuery
         return $this->andWhere('[[level]]<=' . $level);
     }
 
+    public function byLevel($livello)
+    {
+        return $this->andWhere([
+            'level' => $livello,
+        ]);
+    }
+
     /**
      * {@inheritdoc}
      * @return \app\models\Privileges[]|array

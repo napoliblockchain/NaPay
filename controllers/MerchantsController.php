@@ -15,6 +15,7 @@ use yii\helpers\ArrayHelper;
 use app\components\Crypt;
 use app\components\User;
 use app\components\Log;
+use app\models\Privileges;
 use app\models\Users;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -103,6 +104,17 @@ class MerchantsController extends Controller
             // echo '<pre>' . print_r($model->attributes, true) . '</pre>';
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+                // cerco il privilegio Merchant
+                $privilege = Privileges::find()->byLevel(User::ROLE_MERCHANT)->one();
+
+                // cerco l'utene
+                $user = Users::findOne(['id' => $model->user_id]);
+
+                // assegno all'utente il nuovo ruolo di Merchant
+                $user->privilege_id = $privilege->id;
+                $user->save();
+
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Esercente creato correttamente'));
                 // Log message
                 $message_log = Yii::t('app', 'User {user} has created a new {item}: {itemname}', [
@@ -117,16 +129,9 @@ class MerchantsController extends Controller
         }
 
         $users_list = ArrayHelper::map(Users::find()
-            ->joinWith([
-                'privilege', // Includi la relazione con Privileges
-                'merchants' => function ($query) {
-                    // Definisci una relazione con Merchants e aggiungi una clausola where per escludere 
-                    // gli utenti con corrispondenza nella tabella Merchants
-                    $query->andWhere(['NOT', ['merchants.user_id' => new \yii\db\Expression('{{users}}.id')]]);
-                },
-            ])
+            ->joinWith(['privilege'])
+            ->andWhere(['privileges.codice_ruolo' => 'ROLE_USER'])
             ->all(), 'id', 'username');
-
 
         return $this->render('create', [
             'model' => $model,
@@ -222,9 +227,6 @@ class MerchantsController extends Controller
             'addressProvince' => Yii::t('app', 'Provincia'),
             'addressCountry' => Yii::t('app', 'Nazione'),
 
-            // 'create_date' => Yii::t('app', 'Create Date'),
-            // 'close_date' => Yii::t('app', 'Close Date'),
-            // 'historical' => Yii::t('app', 'Historical'),
         ];
 
         // create header

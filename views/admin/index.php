@@ -20,35 +20,26 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="card-body">
                     <div class="container-fluid">
                         <div class="row">
-
                             <?php if (User::isAdministrator()) : ?>
                                 <div class="col-lg-6">
-                            <?php else : ?>
-                                <div class="col-xl-12 col-lg-6">
-                            <?php endif; ?>
-
                                     <?= $this->render('_users', ['dataUsers' => $dataUsers]) ?>
                                 </div>
 
-                                    <?php if (User::isAdministrator()) : ?>
-                                        <div class="col-lg-6">
-                                            <?= $this->render('_privileges', ['dataPrivilegi' => $dataPrivilegi]) ?>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php if (User::isAdministrator()) : ?>
-                                        <div class="col-lg-6">
-                                            <?php //= $this->render('_settings', ['dataSettings' => $dataSettings]) ?>
-                                        </div>
-
-                                        <div class="col-lg-6">
-                                            <?= $this->render('_logs', ['dataLogs' => $dataLogs]) ?>
-                                        </div>
-                                    <?php endif; ?>
+                                <div class="col-lg-6">
+                                    <?= $this->render('_privileges', ['dataPrivilegi' => $dataPrivilegi]) ?>
                                 </div>
+                                <div class="col-lg-6">
+                                    <?= $this->render('_settings', ['dataSettings' => $dataSettings]) ?>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <?= $this->render('_logs', ['dataLogs' => $dataLogs]) ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>

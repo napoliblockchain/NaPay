@@ -10,11 +10,17 @@ use app\models\Users;
  * 
  * 1 - Administrator    ROLE_ADMIN       50  => Full control su applicazione
  * 2 - User             ROLE_USER         0  => Full control sui dati di tutti gli esercenti
- * 3 - Merchant         ROLE_MERCHANT    20  => Visualizza tutti i propri negozi/pos/invoices
+ * 3 - Merchant         ROLE_MERCHANT    30  => Visualizza tutti i propri negozi/pos/invoices
  */
 
 class User extends Component
-{   /**
+{   
+    const ROLE_ADMIN = 50;
+    const ROLE_MERCHANT = 30;
+    const ROLE_USER = 0;
+    
+    
+    /**
      * Verifica se un utente può fare qualcosa in base al level
      * del privilegio
      */

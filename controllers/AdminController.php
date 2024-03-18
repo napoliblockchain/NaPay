@@ -70,10 +70,10 @@ class AdminController extends Controller
             $dataPrivilegi->sort->defaultOrder = ['id' => SORT_DESC];
     
             // Settings
-            // $searchSettings = new SettingsSearch();
-            // $dataSettings = $searchSettings->search(Yii::$app->request->queryParams);
-            // $dataSettings->pagination->pageSize = 5;
-            // $dataSettings->sort->defaultOrder = ['id' => SORT_DESC];
+            $searchSettings = new SettingsSearch();
+            $dataSettings = $searchSettings->search(Yii::$app->request->queryParams);
+            $dataSettings->pagination->pageSize = 5;
+            $dataSettings->sort->defaultOrder = ['id' => SORT_DESC];
 
             // Logs
             $searchLogs = new LogsSearch();
@@ -86,7 +86,7 @@ class AdminController extends Controller
         return $this->render('index', [
             'dataUsers' => $dataUsers,
             'dataPrivilegi' => $dataPrivilegi,
-            // 'dataSettings' => $dataSettings,
+            'dataSettings' => $dataSettings,
             'dataLogs' => $dataLogs,
         ]);
     }

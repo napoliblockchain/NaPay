@@ -18,12 +18,16 @@ use yii\widgets\ActiveForm;
         <?= $form->errorSummary($model, ['id' => 'error-summary', 'class' => 'col-lg-12 callout callout-warning text-warning']) ?>
     </div>
 
-    <?= $form->field($model, 'user_id')->dropDownList(
-        $users_list,
-        [
-            'prompt' => Yii::t('app', 'Seleziona un utente'), 'id' => 'user_id'
-        ]
-    ); ?>
+    <?php if ($model->isNewRecord): ?>
+        <?= $form->field($model, 'user_id')->dropDownList(
+            $users_list,
+            [
+                'prompt' => Yii::t('app', 'Seleziona un utente'), 
+                'id' => 'user_id',
+                // 'class' => 'text-green'
+            ]
+        ); ?>
+    <?php endif; ?>
 
     <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'vatNumber')->textInput(['maxlength' => true]) ?>

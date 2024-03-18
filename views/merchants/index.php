@@ -21,13 +21,21 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-md-12">
             <div class="merchants-index">
-                <?= Alert::widget() ?>
+                <?= app\widgets\Alert::widget() ?>
                 <div class="card card-outline card-primary">
                     <div class="card-header">
                         <div class="d-flex flex-row">
                             <h3 class="p-1"><?= Html::encode($this->title) ?></h3>
+                            <div class="p-1 ml-auto ">
+                                <?= Html::a('<i class="fas fa-file-excel mr-1"></i>' . Yii::t('app', 'Esporta'),
+                                    ['export'], 
+                                [
+                                    'class' => 'btn btn-success',
+                                    'target' => '_blank',
+                                ]) ?>
+                            </div>
                             <?php if (User::isAdministrator()) : ?>
-                                <div class="ml-auto p-1">
+                                <div class="p-1">
                                     <?= Html::a('<button type="button" class="btn btn-warning">
                                         <i class="fas fa-plus"></i> ' . Yii::t('app', 'Nuovo esercente') . '
                                         </button>', ['create']) ?>

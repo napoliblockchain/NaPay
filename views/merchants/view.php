@@ -18,18 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-lg-8">
             <div class="commercianti-view">
-                <?php if (Yii::$app->session->hasFlash('success')) : ?>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <?php echo Yii::$app->session->getFlash('success') ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <?php endif; ?>
-                <?php if (Yii::$app->session->hasFlash('error')) : ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <?php echo Yii::$app->session->getFlash('error') ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <?php endif; ?>
+                <?= app\widgets\Alert::widget() ?>
                 <div class="card card-outline card-primary">
                     <div class="card-header">
                         <div class="d-flex flex-row">
@@ -64,14 +53,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]);
 
                         ?>
-                       
+
                     </div>
                     <div class="card-footer">
-                        <?php if (User::can(40)) : ?>
-                            <div class="d-flex flex-row">
-                                <!-- <div>
-                                    <?= Html::a('<i class="fas fa-pen"></i> ' . Yii::t('app', 'Modifica'), ['update', 'id' => Crypt::encrypt($model->id)], ['class' => 'btn btn-primary']) ?>
-                                </div> -->
+                        <div class="d-flex flex-row">
+                            <div>
+                                <?= Html::a('<i class="fas fa-pen"></i> ' . Yii::t('app', 'Modifica'), ['update', 'id' => Crypt::encrypt($model->id)], ['class' => 'btn btn-primary']) ?>
+                            </div>
+                            <?php if (User::isAdministrator()) : ?>
                                 <div class="ml-auto">
                                     <?= Html::a('<i class="fas fa-trash"></i> ' . Yii::t('app', 'Elimina'), ['delete', 'id' => Crypt::encrypt($model->id)], [
                                         'class' => 'btn btn-danger',

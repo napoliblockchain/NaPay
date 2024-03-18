@@ -100,6 +100,16 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
+     * Gets query for [[Merchants]].
+     *
+     * @return \yii\db\ActiveQuery|\app\models\query\MerchantsQuery
+     */
+    public function getMerchants()
+    {
+        return $this->hasMany(Merchants::class, ['user_id' => 'id']);
+    }
+
+    /**
      * Gets query for [[Privilege]].
      *
      * @return \yii\db\ActiveQuery|\app\models\query\PrivilegesQuery

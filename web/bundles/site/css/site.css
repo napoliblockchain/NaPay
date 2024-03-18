@@ -28,7 +28,10 @@ body {
     background-color: #778593 !important;
 }
 
-
+/* .dark-mode select {
+    background-color: #343a40 !important;
+    color: darkgoldenrod !important;
+} */
 
 .dark-mode input:-webkit-autofill,
 .dark-mode input:-webkit-autofill:focus,

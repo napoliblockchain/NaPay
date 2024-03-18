@@ -4,9 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Merchants;
-use app\models\Stores;
-use app\models\Pos;
-use app\models\Settings;
+
 use app\models\search\MerchantsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -45,10 +43,11 @@ class MerchantsController extends Controller
                     [
                         'actions' => [
                             'index',
-                            'view',
                             'create',
-                            'delete',
+                            'view',
                             'update',
+                            'delete',
+                            'export'
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -118,9 +117,16 @@ class MerchantsController extends Controller
         }
 
         $users_list = ArrayHelper::map(Users::find()
-            ->joinWith('privilege')
-            ->where(['privileges.codice_ruolo' => 'ROLE_USER'])
-            ->all(), 'id', 'description');
+            ->joinWith([
+                'privilege', // Includi la relazione con Privileges
+                'merchants' => function ($query) {
+                    // Definisci una relazione con Merchants e aggiungi una clausola where per escludere 
+                    // gli utenti con corrispondenza nella tabella Merchants
+                    $query->andWhere(['NOT', ['merchants.user_id' => new \yii\db\Expression('{{users}}.id')]]);
+                },
+            ])
+            ->all(), 'id', 'username');
+
 
         return $this->render('create', [
             'model' => $model,
@@ -166,32 +172,8 @@ class MerchantsController extends Controller
      */
     public function actionDelete($id)
     {
-        $closed_at = new \DateTime('now');
-        $close_date = $closed_at->format('Y-m-d');
-
-        // storicizza l'esercente
         $model = $this->findModel(Crypt::decrypt($id));
-        $model->close_date = $close_date;
-        $model->historical = 1;
-        $model->save();
-
-        // storicizza i negozi collegati al merchant
-        $allStores = Stores::find()->byMerchantId($model->id)->all();
-
-        foreach ($allStores as $store){
-            $store->close_date = $close_date;
-            $store->historical = 1;
-            $store->save();
-
-            // storicizza tutti i pos collegati
-            $allPos = Pos::find()->byStoreId($store->id)->all();
-            foreach ($allPos as $pos) {
-                $pos->close_date = $close_date;
-                $pos->historical = 1;
-                $pos->save();
-            }
-        }
-
+        
         // Log message
         $message_log = Yii::t('app', 'User {user} has deleted {item}: {itemname}', [
             'user' => Yii::$app->user->identity->username,
@@ -200,9 +182,92 @@ class MerchantsController extends Controller
         ]);
         Log::save(Yii::$app->controller->id, (Yii::$app->controller->action->id), $message_log);
         // end log message
-        
+
+        $model->delete();
         return $this->redirect(['index']);
     }
+
+    /**
+     * Esporta la selezione in un file excel
+     */
+    public function actionExport()
+    {
+//         echo '<pre>' . print_r(Yii::$app->request->queryParams, true) . '</pre>';
+// exit;
+
+
+        $searchModel = new MerchantsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->sort->defaultOrder = ['description' => SORT_ASC];
+        $dataProvider->pagination->pageSize = false;
+
+        $allModels = $dataProvider->getModels();
+
+        // inizializzo la classe Excel
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Attributi da scaricare
+        $attributeLabels = [
+            'id' => Yii::t('app', 'ID'),
+            'vatNumber' => Yii::t('app', 'P.Iva'),
+            'description' => Yii::t('app', 'Descrizione'),
+            'email' => Yii::t('app', 'Email'),
+            'phone' => Yii::t('app', 'Telefono'),
+            'mobile' => Yii::t('app', 'Mobile'),
+            'addressStreet' => Yii::t('app', 'Indirizzo'),
+            'addressNumberHouse' => Yii::t('app', 'Civico'),
+            'addressCity' => Yii::t('app', 'Città'),
+            'addressZip' => Yii::t('app', 'Zip'),
+            'addressProvince' => Yii::t('app', 'Provincia'),
+            'addressCountry' => Yii::t('app', 'Nazione'),
+
+            // 'create_date' => Yii::t('app', 'Create Date'),
+            // 'close_date' => Yii::t('app', 'Close Date'),
+            // 'historical' => Yii::t('app', 'Historical'),
+        ];
+
+        // create header
+        $x = 0;
+        foreach ($attributeLabels as $field => $text) {
+            $sheet->setCellValue($this->getCellFromColnum($x) . '1', $text);
+            $x++;
+        }
+
+        // load rows
+        // adesso fare il ciclo sui campi dei titoli...
+        $row = 2;
+        foreach ($allModels as $n => $model) {
+            $col = 0;
+            foreach ($attributeLabels as $field => $text) {
+                $writeText = $model->$field;
+                $sheet->setCellValue($this->getCellFromColnum($col) . $row, trim($writeText ?? ''), null);
+
+                $col++;
+            }
+            $row++;
+        }
+
+        // output the file
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $date = date('Y/m/d H:i:s', time());
+        $filename = $date . '-merchants.xlsx';
+        $response = Yii::$app->getResponse();
+        $headers = $response->getHeaders();
+        $headers->set('Content-Type', 'application/vnd.ms-excel');
+        $headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
+        $headers->set('Cache-Control: max-age=0');
+        ob_start();
+        $writer->save("php://output");
+        $content = ob_get_contents();
+        ob_clean();
+        return $content;
+    }
+
+    private function getCellFromColnum($colNum)
+    {
+        return ($colNum < 26 ? chr(65 + $colNum) : chr(65 + floor($colNum / 26) - 1) . chr(65 + ($colNum % 26)));
+    }  
 
     /**
      * Finds the Merchants model based on its primary key value.

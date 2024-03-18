@@ -1,5 +1,7 @@
 <?php
 use kartik\detail\DetailView;
+use yii\helpers\Html;
+
 ?>
 
 <?= DetailView::widget([
@@ -15,19 +17,23 @@ use kartik\detail\DetailView;
     'labelColOptions' => ['style' => 'width:15%'],
     'valueColOptions' => ['style' => 'width:35%'],
     'attributes' => [
+        [
+            'attribute' => 'user_id',
+            'format' => 'raw',
+            'value' => Html::encode($model->user->username)
+        ],
         'description',
         'vatNumber',
-        'email:email',
-        'swg_companyId',
-        'phone',
-        'mobile',
         'addressStreet',
         'addressNumberHouse',
         'addressCity',
         'addressZip',
         'addressProvince',
         'addressCountry',
-
+        
+        'email:email',
+        'phone',
+        'mobile',
     ],
 ]) ?>
 

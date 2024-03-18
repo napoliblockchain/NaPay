@@ -32,6 +32,8 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     const STATUS_ACTIVE = 1;
     const STATUS_BLOCKED = 2;
 
+    public $merchant_id;
+
     /**
      * {@inheritdoc}
      */

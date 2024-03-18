@@ -242,7 +242,7 @@ class UsersController extends Controller
      */
     public function actionView($id)
     {
-        $merchants_list = ArrayHelper::map(Merchants::find()->active()->all(), 'id', 'description');
+        $merchants_list = ArrayHelper::map(Merchants::find()->all(), 'id', 'description');
         asort($merchants_list);
 
         return $this->render('view', [

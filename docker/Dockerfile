@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     && docker-php-ext-install -j$(nproc) intl pdo_mysql gd zip bcmath gmp sockets
 
-# # Install utility
+# Install utility
 RUN apt-get install -y --no-install-recommends apt-utils
 RUN apt-get install -y net-tools iputils-ping
 RUN apt install -y htop

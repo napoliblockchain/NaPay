@@ -18,11 +18,9 @@ return [
     'defaultTimeZone' => $secrets['defaultTimeZone'],
     'localTimeZone' => $secrets['localTimeZone'],
 
-    'hostname' => $secrets['hostname'],
-    'version' => $version['version'],
-
     'logoApplicazione' => '@web/bundles/site/images/logo.png',
     'icon-framework' => 'fa',  // Font Awesome Icon framework
+    'version' => $version['version'],
     
     /**
      * Parametrizzazione società 
@@ -47,11 +45,4 @@ return [
      * generated from: https://randomkeygen.com/
      */
     'secret_hash_key' => $secrets['secret_hash_key'],
-
-    /**
-     * set webhook logs 
-     */
-    'webHookLogs' => true,
-
-   
 ];

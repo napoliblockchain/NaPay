@@ -15,9 +15,19 @@ class m240315_142026_create_user_consensus_table extends Migration
         $this->createTable('{{%user_consensus}}', [
             'id' => $this->primaryKey(),
             'user_id' => $this->integer()->notNull(),
-            'marketing' => $this->integer()->notNull()->defaultValue(0),
-            'dati_personali' => $this->integer()->notNull()->defaultValue(0),
-            'timestamp' => $this->integer()->notNull(),
+            'consenso_statuto' => $this->integer()->notNull()->defaultValue(0),
+            'consenso_privacy' => $this->integer()->notNull()->defaultValue(0),
+            'consenso_condizioni' => $this->integer()->notNull()->defaultValue(0),
+            
+            'consenso_condizioni_pos' => $this->integer()->defaultValue(null),
+            'consenso_marketing' => $this->integer()->notNull()->defaultValue(0),
+            
+            'timestamp_statuto' => $this->integer()->notNull(),
+            'timestamp_privacy' => $this->integer()->notNull(),
+            'timestamp_condizioni' => $this->integer()->notNull(),
+            
+            'timestamp_condizioni_pos' => $this->integer()->defaultValue(null),
+            'timestamp_marketing' => $this->integer()->notNull(),
         ]);
 
 

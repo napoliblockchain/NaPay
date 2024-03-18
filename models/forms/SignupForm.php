@@ -116,7 +116,6 @@ class SignupForm extends Model
                 $message = 'Unable to save ' . self::PROVIDER_SOURCE . ' for new account '. $this->username .':</br></br>'.print_r($user->getErrors(), true);
                 Yii::$app->getSession()->setFlash('error', $message);
                 Log::save(Yii::$app->controller->id, (Yii::$app->action->id ?? 'index'), $message);
-                return null;
             }
 
         }

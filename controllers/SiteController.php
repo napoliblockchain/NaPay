@@ -222,15 +222,35 @@ class SiteController extends Controller
         $model = new SignupForm();
         $consensus = new UserConsensus();
 
-
         $post = Yii::$app->request->post();
         // echo "<pre>".print_r($post,true)."</pre>";exit;
 
-        if (isset($post['SignupForm'])) {
-            if ($model->load(Yii::$app->request->post())) {
-                if ($model->signup()) {
-                    Yii::$app->session->setFlash('success','Utente registrato con successo');
-                    return $this->redirect(['site/index']);
+        if (isset($post['SignupForm']) && isset($post['UserConsensus'])) {
+            if ($model->load(Yii::$app->request->post()) && $consensus->load(Yii::$app->request->post())) {
+
+                $connection = \Yii::$app->db;
+                $transaction = $connection->beginTransaction();
+                try {
+                    if ($user = $model->signup()){
+                        // echo "<pre>" . print_r($user->attributes, true) . "</pre>";exit;
+
+                        $consensus->user_id = $user->id;
+                        if ($consensus->save()){
+                            $transaction->commit();
+
+                            Yii::$app->session->setFlash('success','Utente registrato con successo');
+                            return $this->redirect(['site/index']);
+                        } else {
+                            $transaction->rollback();
+                            Yii::$app->session->setFlash('warning', $consensus->getErrors());
+                        }
+                    } else {
+                        $transaction->rollback();
+                        Yii::$app->session->setFlash('warning', $consensus->getErrors());
+                    }
+                } catch (\Exception $e) {
+                    $transaction->rollback();
+                    Yii::$app->session->setFlash('warning', $e->getMessage());
                 }
             } else {
                 $p = '<p>C\'è stato un errore.</p>';
@@ -240,6 +260,13 @@ class SiteController extends Controller
                     foreach ($error as $e)
                         $p .= '<p>' . $e . '</p>';
                 }
+                $errors = $consensus->getErrors();
+                foreach ($errors as $id => $error) {
+                    // echo "<pre>".print_r($error,true)."</pre>";exit;
+                    foreach ($error as $e)
+                        $p .= '<p>' . $e . '</p>';
+                }
+
                 Yii::$app->session->setFlash('error', $p);
             }
         }

@@ -6,6 +6,7 @@ use yii\grid\GridView;
 use app\components\Crypt;
 use app\components\User;
 use yii\bootstrap5\ActiveForm;
+use app\widgets\Alert;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\CommerciantiSearch */
@@ -14,48 +15,22 @@ use yii\bootstrap5\ActiveForm;
 $this->title = Yii::t('app', 'Esercenti');
 $this->params['breadcrumbs'][] = $this->title;
 
-$status_list = ['Attivo', 'Disabilitato'];
+// $status_list = ['Attivo', 'Disabilitato'];
 ?>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
             <div class="merchants-index">
-                <?php if (Yii::$app->session->hasFlash('success')) : ?>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <?php echo Yii::$app->session->getFlash('success') ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <?php endif; ?>
-                <?php if (Yii::$app->session->hasFlash('error')) : ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <?php echo Yii::$app->session->getFlash('error') ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <?php endif; ?>
+                <?= Alert::widget() ?>
                 <div class="card card-outline card-primary">
                     <div class="card-header">
                         <div class="d-flex flex-row">
                             <h3 class="p-1"><?= Html::encode($this->title) ?></h3>
-
-                            <?php if (User::can(30)) : ?>
+                            <?php if (User::isAdministrator()) : ?>
                                 <div class="ml-auto p-1">
                                     <?= Html::a('<button type="button" class="btn btn-warning">
                                         <i class="fas fa-plus"></i> ' . Yii::t('app', 'Nuovo esercente') . '
                                         </button>', ['create']) ?>
-                                </div>
-                                <div class="p-1">
-                                    <?php $form = ActiveForm::begin([
-                                        'id' => 'export-form',
-                                        'action' => ['export'],
-                                        'method' => 'post',
-                                    ]); ?>
-                                    <input type='hidden' name='queryParams' value='<?= $queryParams ?>' />
-
-                                    <?= Html::submitButton('<i class="fas fa-file-excel mr-1"></i>' . Yii::t('app', 'Esporta'), [
-                                        'class' => 'btn btn-success',
-                                        'target' => '_blank'
-                                    ]) ?>
-                                    <?php ActiveForm::end(); ?>
                                 </div>
                             <?php endif; ?>
                         </div>

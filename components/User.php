@@ -8,9 +8,9 @@ use app\models\Users;
 /**
  * ### Ruoli utente dal README
  * 
- * 1 - Administrator    ROLE_POS_ADMIN           50  => Full control su applicazione
- * 2 - Junior           ROLE_POS_JUNIOR_VIEWER    0  => Visualizza solo il negozio/pos/invoice assegnati
- * 3 - Senior           ROLE_POS_SENIOR_VIEWER   30  => Visualizza tutti i propri negozi/pos/invoices
+ * 1 - Administrator    ROLE_ADMIN       50  => Full control su applicazione
+ * 2 - User             ROLE_USER         0  => Full control sui dati di tutti gli esercenti
+ * 3 - Merchant         ROLE_MERCHANT    20  => Visualizza tutti i propri negozi/pos/invoices
  */
 
 class User extends Component
@@ -45,14 +45,14 @@ class User extends Component
     }
 
     // utente merchant admin
-    public static function isSenior()
+    public static function isMerchant()
     {
         $p = Users::findOne(Yii::$app->user->identity->id);
         return ($p->privilege->level === 30);
     }
 
     // utente merchant junior
-    public static function isJunior()
+    public static function isUser()
     {
         $p = Users::findOne(Yii::$app->user->identity->id);
         return ($p->privilege->level === 0);    

@@ -9,6 +9,9 @@ namespace app\models\query;
  */
 class UsersQuery extends \yii\db\ActiveQuery
 {
+    /**
+     * user is active
+     */
     public function active()
     {
         return $this->andWhere('[[is_active]]=1');

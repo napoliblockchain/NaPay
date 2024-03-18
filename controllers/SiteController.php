@@ -84,7 +84,7 @@ class SiteController extends Controller
         // $searchMerchants = new MerchantsSearch();
         // $dataMerchants = $searchMerchants->search(Yii::$app->request->queryParams);
         // $dataMerchants->query->andwhere(['=', 'historical', 0]);
-        // if (User::isSenior() || User::isJunior()) {
+        // if (User::isMerchant() || User::isUser()) {
         //     $dataMerchants->query->andwhere(['=', 'id', Yii::$app->user->identity->merchant_id]);
         // }
         // $dataMerchants->pagination->pageSize = 5;
@@ -94,7 +94,7 @@ class SiteController extends Controller
         // $searchStores = new StoresSearch();
         // $dataStores = $searchStores->search(Yii::$app->request->queryParams);
         // $dataStores->query->andwhere(['=', 'stores.historical', 0]);
-        // if (User::isJunior()) {
+        // if (User::isUser()) {
         //     $dataStores->query->andwhere(['=', 'stores.id', Yii::$app->user->identity->store_id]);
         // }
         // $dataStores->pagination->pageSize = 5;
@@ -104,10 +104,10 @@ class SiteController extends Controller
         // $searchPos = new PosSearch();
         // $dataPos = $searchPos->search(Yii::$app->request->queryParams);
         // $dataPos->query->andwhere(['=', 'pos.historical', 0]);
-        // if (User::isSenior()) {
+        // if (User::isMerchant()) {
         //     $dataPos->query->andwhere(['=', 'pos.merchant_id', Yii::$app->user->identity->merchant_id]);
         // }
-        // if (User::isJunior()) {
+        // if (User::isUser()) {
         //     $dataPos->query->andwhere(['=', 'pos.store_id', Yii::$app->user->identity->store_id]);
         // }
         // $dataPos->pagination->pageSize = 5;
@@ -119,10 +119,10 @@ class SiteController extends Controller
         // $dataInvoices = $searchInvoices->search(Yii::$app->request->queryParams);
         // $dataInvoices->query->andwhere(['=', 'invoices.archived', 0]);
         // $dataInvoices->pagination->pageSize = 5;
-        // if (User::isSenior()) {
+        // if (User::isMerchant()) {
         //     $dataInvoices->query->andwhere(['=', 'invoices.merchant_id', Yii::$app->user->identity->merchant_id]);
         // }
-        // if (User::isJunior()) {
+        // if (User::isUser()) {
         //     $dataInvoices->query->andwhere(['=', 'invoices.store_id', Yii::$app->user->identity->store_id]);
         // }
         // $dataInvoices->sort->defaultOrder = ['id' => SORT_DESC];

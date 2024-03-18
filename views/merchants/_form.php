@@ -1,38 +1,43 @@
 <?php
 
 use yii\helpers\Html;
-use yii\bootstrap5\ActiveForm;
-
+use yii\widgets\ActiveForm;
 
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Commercianti */
 /* @var $form yii\widgets\ActiveForm */
 
-if ($model->isNewRecord) {
-    $created_at = new \DateTime('now');
-    $create_date = $created_at->format('Y-m-d');
-    $model->create_date = $create_date;
-    $model->historical = 0;
-}
 ?>
 
 <div class="commercianti-form">
 
     <?php $form = ActiveForm::begin(); ?>
+
     <div class="txt-left">
-        <?= $form->errorSummary($model, ['id' => 'error-summary', 'class' => 'col-lg-12 callout callout-warning']) ?>
+        <?= $form->errorSummary($model, ['id' => 'error-summary', 'class' => 'col-lg-12 callout callout-warning text-warning']) ?>
     </div>
 
-       
-    <?= $form->field($model, 'swg_companyId')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'user_id')->dropDownList(
+        $users_list,
+        [
+            'prompt' => Yii::t('app', 'Seleziona un utente'), 'id' => 'user_id'
+        ]
+    ); ?>
 
+    <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'vatNumber')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'create_date')->hiddenInput()->label(false) ?>
-    <?= $form->field($model, 'close_date')->hiddenInput()->label(false) ?>
-    <?= $form->field($model, 'historical')->hiddenInput()->label(false) ?>
+    <?= $form->field($model, 'addressStreet')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'addressNumberHouse')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'addressZip')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'addressCity')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'addressProvince')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'addressCountry')->textInput(['maxlength' => true]) ?>
 
-
+    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'mobile')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('<i class="fa fa-save"></i> ' . Yii::t('app', 'Salva'), ['class' => 'btn btn-success']) ?>

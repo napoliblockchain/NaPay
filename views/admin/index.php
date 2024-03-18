@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                     <?php if (User::isAdministrator()) : ?>
                                         <div class="col-lg-6">
-                                            <?= $this->render('_settings', ['dataSettings' => $dataSettings]) ?>
+                                            <?php //= $this->render('_settings', ['dataSettings' => $dataSettings]) ?>
                                         </div>
 
                                         <div class="col-lg-6">

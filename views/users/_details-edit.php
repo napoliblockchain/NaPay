@@ -45,6 +45,7 @@ $icon = [0 => 'icon fas fa-exclamation-triangle', 1 => 'icon fas fa-check'];
             <div class="col-md-12 col-sm-12 col-12">
                 <div class="card-info card-outline info-box shadow-sm">
                     <div class="row">
+                        <?php if (!User::isAdministrator()): ?>
                         <div class="col-lg-12 col-sm-12">
                             <p class="text-muted">
                                 <?= $form->field($model, 'privilege_id')->dropDownList(
@@ -79,12 +80,13 @@ $icon = [0 => 'icon fas fa-exclamation-triangle', 1 => 'icon fas fa-check'];
                                     'depends' => ['merchant_id'],
                                     'placeholder' => Yii::t('app', 'Select Client'),
                                     'url' => Url::to(['stores/lista-negozi', 'id' => $model->store_id ?? 0])
-
-                                ]
-                                
-                            ])->label('Negozio');
-                            ?>
+                                    
+                                    ]
+                                    
+                                    ])->label('Negozio');
+                                    ?>
                         </div>
+                        <?php endif; ?>
                         <div class="col-lg-12 col-sm-12">
                             <?= $form->field($model, 'is_active', ['options' => ['class' => 'shadow p-2 mb-3']])->dropDownList(
                                 $status,

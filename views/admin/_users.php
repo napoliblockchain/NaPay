@@ -8,7 +8,7 @@ use app\components\Crypt;
 <div class="card card-outline card-primary">
     <div class="card-header border-0">
         <h3 class="card-title">
-            <?= Html::a('<i class="fa fa-list"></i>', Url::to(['users/index']), [
+            <?= Html::a('<i class="fa fa-users"></i>', Url::to(['users/index']), [
                 'title' => Yii::t('app', 'Lista'),
                 'class' => 'btn btn-sm btn-default',
             ])  ?>
@@ -19,7 +19,7 @@ use app\components\Crypt;
         <?= GridView::widget([
             'dataProvider' => $dataUsers,
             'tableOptions' => [
-                'class' => 'table table-sm table-valign-middle small',
+                'class' => 'table table-hover table-sm table-valign-middle small',
             ],
             'summary' => false,
             'columns' => [
@@ -55,7 +55,7 @@ use app\components\Crypt;
                         return $data->privilege->description;
                     },
                 ],
-                
+
 
             ],
         ]); ?>

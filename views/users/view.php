@@ -23,7 +23,7 @@ SidebarCollapseAsset::register($this);
         <div class="card">
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-                <?= Html::img('@web/bundles/site/images/anonymous.png', [
+                <?= Html::img($model->picture, [
                     'alt' => 'Profile',
                     'class' => "profile-user-img img-fluid img-circle",
                 ]) ?>

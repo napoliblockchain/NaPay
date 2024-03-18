@@ -23,7 +23,6 @@ use app\components\Crypt;
             ],
             'summary' => false,
             'columns' => [
-                'id',
                 // view button
                 [
                     'class' => 'yii\grid\ActionColumn',
@@ -44,6 +43,8 @@ use app\components\Crypt;
                     ],
 
                 ],
+                'id',
+
                 // 'timestamp:datetime',
                 [
                     'attribute' => 'timestamp',

@@ -24,7 +24,7 @@ use app\components\Crypt;
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
                 <?=
-                Html::img('@web/bundles/site/images/anonymous.png', [
+                Html::img(Yii::$app->user->identity->picture, [
                     'alt' => 'user image',
                     'class' => "img-circle elevation-2",
                 ]) ?>

@@ -20,11 +20,11 @@ use yii\helpers\Url;
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
         <!-- fullscreen button -->
-        <li class="nav-item">
+        <!-- <li class="nav-item">
             <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                 <i class="fas fa-expand-arrows-alt"></i>
             </a>
-        </li>
+        </li> -->
 
         <li class="nav-item">
             <?= Html::a('<i class="fas fa-sign-out-alt"></i>', ['/site/logout'], ['data-method' => 'post', 'class' => 'nav-link']) ?>

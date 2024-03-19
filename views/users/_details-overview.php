@@ -6,6 +6,7 @@ use kartik\detail\DetailView;
 
 use app\components\User;
 use app\components\Crypt;
+use app\models\Merchants;
 
 ?>
 
@@ -61,7 +62,11 @@ use app\components\Crypt;
     ],
 ]) ?>
 
-<?php if (User::isMerchant()):  ?>
+<?php 
+    $verifyMerchant = Merchants::find()->andWhere(['user_id' => Yii::$app->user->identity->id])->one();
+
+    if (User::isMerchant() && null !== $verifyMerchant):
+?>
     <div class="row">
         <div class="col-3">
             <?= Html::a('<i class="fa fa-eye"></i> ' . Yii::t('app','Merchant details'), Url::to(['merchants/view', 'id' => Crypt::encrypt(User::getMerchantId())]), [

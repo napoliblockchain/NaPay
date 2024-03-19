@@ -166,7 +166,6 @@ class StoresController extends Controller
             }
         }
 
-
         $model = new Stores();
 
         if ($model->load(Yii::$app->request->post())) {

@@ -91,21 +91,14 @@ $yesOrNot = [
                             'last_name',
                             'email:email',
                             [
-                                'attribute' => 'merchant_id',
+                                'attribute' => 'merchantSearch',
                                 'format' => 'raw',
                                 'value' => function ($data) {
-                                    return $data->merchant->description ?? null;
+                                    return $data->merchants[0]->description ?? null;
                                 },
                                 'filter' => false
                             ],
-                            [
-                                'attribute' => 'store_id',
-                                'format' => 'raw',
-                                'value' => function ($data) {
-                                    return $data->store->description ?? null;
-                                },
-                                'filter' => false
-                            ],
+                            
                             [
                                 'attribute' => 'privilege_id',
                                 'format' => 'raw',

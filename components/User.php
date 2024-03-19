@@ -24,7 +24,7 @@ class User extends Component
      */
     public static function getMerchantId()
     {
-        return Yii::$app->user->identity->merchants[0]->id;
+        return Yii::$app->user->identity->merchants[0]->id ?? 0;
     }
 
     /**

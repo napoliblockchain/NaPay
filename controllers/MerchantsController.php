@@ -43,6 +43,18 @@ class MerchantsController extends Controller
                 'rules' => [
                     [
                         'actions' => [
+                            'create',
+                            'view',
+                            'update',
+                        ],
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return User::isMerchant();
+                        },
+                    ],
+                    [
+                        'actions' => [
                             'index',
                             'create',
                             'view',

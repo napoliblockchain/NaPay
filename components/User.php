@@ -20,6 +20,14 @@ class User extends Component
     const ROLE_USER = 0;
     
     /**
+     * Restituisce l'id del Merchant 
+     */
+    public static function getMerchantId()
+    {
+        return Yii::$app->user->identity->merchants[0]->id;
+    }
+
+    /**
      * Restituisce tutti i model degli amministratori
      */
     public static function getAdmins()

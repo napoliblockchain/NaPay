@@ -10,8 +10,9 @@ use kartik\tabs\TabsX;
 /* @var $model app\models\Commercianti */
 
 $this->title = sprintf('Dettaglio Esercente - ID: %s', $model->id);
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Esercenti'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Esercenti'), 'url' => User::isAdministrator() ? ['index'] : ''];
 $this->params['breadcrumbs'][] = $this->title;
+
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="container-fluid">
@@ -23,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="card-header">
                         <div class="d-flex flex-row">
                             <h3><?= Html::encode($this->title) ?></h3>
-                            <?php if (User::can(30)) : ?>
+                            <?php if (User::isAdministrator()) : ?>
                                 <div class="ml-auto">
                                     <?= Html::a('<button type="button" class="btn btn-warning">
                                         <i class="fas fa-plus"></i> ' . Yii::t('app', 'Nuovo esercente') . '
@@ -70,8 +71,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                         ],
                                     ]) ?>
                                 </div>
-                            </div>
-                        <?php endif; ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>

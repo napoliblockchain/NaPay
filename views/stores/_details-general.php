@@ -36,12 +36,6 @@ use kartik\detail\DetailView;
         ],
         
         [
-            'attribute' => 'swg_storeId',
-            'value' => Html::encode($model->swg_storeId),
-            'format' => 'raw',
-        ],
-       
-        [
             'attribute' => 'description',
             'format' => 'raw',
             'value' => Html::encode($model->description ?? null)
@@ -93,7 +87,7 @@ use kartik\detail\DetailView;
     ],
 ]) ?>
 
-<?php if (User::can(40)): ?>
+<?php if (User::isMerchant()): ?>
 <div class="card-footer">
     <div class="d-flex flex-row">
         <div class="p-1">

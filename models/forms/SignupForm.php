@@ -14,6 +14,7 @@ class SignupForm extends Model
 {
     const PRIVILEGE_ADMINISTRATOR_ID = 1; // privilege_id -> webmaster
     const PRIVILEGE_USER_ID = 2; // USER
+    const PRIVILEGE_MERCHANT_ID = 3; // MERCHANT
 
     const PROVIDER_SOURCE = 'SELF';
 
@@ -95,11 +96,17 @@ class SignupForm extends Model
 
         if ($this->validate()) {
             $privilegio = self::PRIVILEGE_USER_ID;
+
+            if ($this->is_merchant == 1){
+                $privilegio = self::PRIVILEGE_MERCHANT_ID;
+            }
+
             $test_privilege = Users::findOne(1);
             if (null === $test_privilege) {
                 $privilegio = self::PRIVILEGE_ADMINISTRATOR_ID;
             }
 
+            // nonce per effettuare l'attivazione utente tramite link in email
             $microtime = explode(' ', microtime());
             $nonce = $microtime[1] . str_pad(substr($microtime[0], 2, 6), 6, '0');
 

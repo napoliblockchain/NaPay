@@ -53,6 +53,14 @@ class StoresController extends Controller
                             'index',
                             'view',
                             'export',
+                            'create',
+                            'update-general',
+                            'update-wallet',
+                            'update-rates',
+                            'update-checkout',
+                            'update-criteria',
+                            'update-webhook',
+                            'delete',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -66,10 +74,11 @@ class StoresController extends Controller
                             'view',
                             'create',
                             'update-general',
-                            'update-rates',
-                            'update-checkout',
-                            'update-criteria',
-                            'update-webhook',
+                            // 'update-wallet',
+                            // 'update-rates',
+                            // 'update-checkout',
+                            // 'update-criteria',
+                            // 'update-webhook',
                             'delete',
                             'lista-negozi',
                             'export',
@@ -96,7 +105,7 @@ class StoresController extends Controller
         $searchModel = new StoresSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         if (User::isMerchant()) {
-            $dataProvider->query->andwhere(['=', 'stores.merchant_id', Yii::$app->user->identity->merchant_id]);
+            $dataProvider->query->andwhere(['=', 'stores.merchant_id', User::getMerchantId()]);
         }
         $dataProvider->sort->defaultOrder = ['description' => SORT_ASC];
 
@@ -147,6 +156,17 @@ class StoresController extends Controller
      */
     public function actionCreate() 
     {
+        // Verifica che esista l'esercente 
+        if (User::isMerchant()){
+            $verifyMerchant = Merchants::find()->andWhere(['user_id' => Yii::$app->user->identity->id])->one();
+
+            if (null === $verifyMerchant){
+                Yii::$app->session->setFlash('warning', Yii::t('app', 'Prima di poter creare un negozio devi inserire le tue informazioni di esercente.'));
+                return $this->redirect(['merchants/create']);
+            }
+        }
+
+
         $model = new Stores();
 
         if ($model->load(Yii::$app->request->post())) {
@@ -223,12 +243,11 @@ class StoresController extends Controller
                                 1 => ['paymentMethod' => 'BTC-LightningNetwork', 'currencyCode' => 'EUR', 'amount' => 0, 'above' => 1],
                                 2 => ['paymentMethod' => 'BTC-LNURLPAY', 'currencyCode' => 'EUR', 'amount' => 0, 'above' => 1],
                             ]),
-                            // 'derivationScheme' => $settings->derivationScheme,
-                            // 'label' => $settings->derivationLabel,
-                            // 'accountKeyPath' => $settings->derivationAccountKeyPath,
+                            // 'derivationScheme' => null, //$settings->derivationScheme,
+                            // 'label' => null, //$settings->derivationLabel,
+                            // 'accountKeyPath' => null, //$settings->derivationAccountKeyPath,
 
                         ]);
-
 
                         if ($storesettings->save()) {
                             $BTCPayServer = new BTCPayServer($settings->btcpayHost, $settings->btcpayApiKey);
@@ -475,7 +494,7 @@ class StoresController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-            'merchants_list' => ArrayHelper::map(Merchants::find()->active()->all(), 'id', 'description'),
+            'merchants_list' => ArrayHelper::map(Merchants::find()->all(), 'id', 'description'),
             '_form' => '_form-general',
             'title' => Yii::t('app', 'Update Stores: {name}', [
                 'name' => $model->storesettings->bps_storeid,
@@ -547,7 +566,7 @@ class StoresController extends Controller
         }
         return $this->render('update', [
             'model' => $model,
-            'merchants_list' => ArrayHelper::map(Merchants::find()->active()->all(), 'id', 'description'),
+            'merchants_list' => ArrayHelper::map(Merchants::find()->all(), 'id', 'description'),
             '_form' => '_form-rates',
             'title' => Yii::t('app', 'Update Stores: {name}', [
                 'name' => $model->storesettings->bps_storeid,
@@ -667,7 +686,7 @@ class StoresController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-            'merchants_list' => ArrayHelper::map(Merchants::find()->active()->all(), 'id', 'description'),
+            'merchants_list' => ArrayHelper::map(Merchants::find()->all(), 'id', 'description'),
             '_form' => '_form-checkout',
             'title' => Yii::t('app', 'Modifica Aspetto del pagamento: {name}', [
                 'name' => $model->storesettings->bps_storeid,
@@ -804,7 +823,7 @@ class StoresController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-            'merchants_list' => ArrayHelper::map(Merchants::find()->active()->all(), 'id', 'description'),
+            'merchants_list' => ArrayHelper::map(Merchants::find()->all(), 'id', 'description'),
             '_form' => '_form-criteria',
             'title' => Yii::t('app', 'Modifica Criteri di pagamento: {name}', [
                 'name' => $model->storesettings->bps_storeid,
@@ -885,7 +904,7 @@ class StoresController extends Controller
 
         return $this->render('update', [
             'model' => $store,
-            'merchants_list' => ArrayHelper::map(Merchants::find()->active()->all(), 'id', 'description'),
+            'merchants_list' => ArrayHelper::map(Merchants::find()->all(), 'id', 'description'),
             '_form' => '_form-webhook',
             'title' => Yii::t('app', 'Modifica Webhook: {name}', [
                 'name' => $store->storesettings->bps_storeid,

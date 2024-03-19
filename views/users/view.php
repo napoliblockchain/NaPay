@@ -9,14 +9,12 @@ use app\components\User;
 /* @var $model app\models\Users */
 
 $this->title = Yii::t('app', 'User: ') . $model->username;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Utenti'), 'url' => User::can(40) ? ['index'] : ''];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Utenti'), 'url' => User::isAdministrator() ? ['index'] : ''];
 
 \yii\web\YiiAsset::register($this);
 SidebarCollapseAsset::register($this);
 
-        // echo "<pre>" . print_r($model->negozio, true) . "</pre>";exit;
-
-
+// echo "<pre>" . print_r($model->negozio, true) . "</pre>";exit;
 ?>
 <div class="row">
     <div class="col-xl-4">
@@ -30,8 +28,6 @@ SidebarCollapseAsset::register($this);
                 <h3 class="profile-username text-center"><?= $model->first_name . chr(32) . $model->last_name  ?></h3>
                 <p class="text-muted text-center mb-0"><?= 'Profilo: ' . $model->privilege->description ?></p>
                 <p class="text-muted text-center mt-0"><?= 'Email: ' . $model->email ?></p>
-
-
             </div>
         </div>
     </div>

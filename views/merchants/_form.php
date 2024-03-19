@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
+use app\components\User;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Commercianti */
@@ -18,15 +18,16 @@ use yii\widgets\ActiveForm;
         <?= $form->errorSummary($model, ['id' => 'error-summary', 'class' => 'col-lg-12 callout callout-warning text-warning']) ?>
     </div>
 
-    <?php if ($model->isNewRecord): ?>
+    <?php if ($model->isNewRecord && User::isAdministrator()) : ?>
         <?= $form->field($model, 'user_id')->dropDownList(
             $users_list,
             [
-                'prompt' => Yii::t('app', 'Seleziona un utente'), 
+                'prompt' => Yii::t('app', 'Seleziona un utente'),
                 'id' => 'user_id',
-                // 'class' => 'text-green'
             ]
         ); ?>
+    <?php else : ?>
+        <?= $form->field($model, 'user_id')->hiddenInput(['value' => Yii::$app->user->identity->id])->label(false) ?>
     <?php endif; ?>
 
     <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>

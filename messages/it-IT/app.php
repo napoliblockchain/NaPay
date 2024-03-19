@@ -72,7 +72,7 @@ return [
     'Dettagli' => '',
     'Dettagli: ' => '',
     'Dettaglio' => '',
-    'Disabled' => 'Disabiliato',
+    'Disabled' => 'Disabilitato',
     'Do you want to leave a tip?' => 'Vuoi lasciare la mancia?',
     'Due' => 'Importo Dovuto',
     'ERROR for user {user}. {title}: {message}' => '',

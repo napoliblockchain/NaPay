@@ -22,6 +22,7 @@ class SignupForm extends Model
     public $first_name;
     public $last_name;
     public $email;
+    public $is_merchant;
 
     // holds the password confirmation word
     public $repeat_password;
@@ -52,6 +53,8 @@ class SignupForm extends Model
             ['password', 'string', 'min' => 8],
 
             ['repeat_password', 'compare', 'compareAttribute'=>'password'],
+
+            ['is_merchant', 'integer'],
 
         ];
     }
@@ -86,12 +89,19 @@ class SignupForm extends Model
         // echo "<pre>".print_r($_POST,true)."</pre>";
 		// exit;
 
+        // echo "<pre>".print_r($this->attributes,true)."</pre>";
+		// exit;
+
+
         if ($this->validate()) {
             $privilegio = self::PRIVILEGE_USER_ID;
             $test_privilege = Users::findOne(1);
             if (null === $test_privilege) {
                 $privilegio = self::PRIVILEGE_ADMINISTRATOR_ID;
             }
+
+            $microtime = explode(' ', microtime());
+            $nonce = $microtime[1] . str_pad(substr($microtime[0], 2, 6), 6, '0');
 
             $user = new Users([
                 'username' => $this->username,
@@ -101,10 +111,11 @@ class SignupForm extends Model
                 'last_name' => $this->last_name,
                 'oauth_provider' => self::PROVIDER_SOURCE,
                 'oauth_uid' => \Yii::$app->security->generateRandomString(),
-                'authKey' => \Yii::$app->security->generateRandomString(),
+                'authKey' => $nonce, //\Yii::$app->security->generateRandomString(),
                 'accessToken' => \Yii::$app->security->generateRandomString(),
                 'picture' => '/bundles/site/images/anonymous.png',
                 'privilege_id' => $privilegio,
+                'is_merchant' => $this->is_merchant,
                 'is_active' => (null === $test_privilege) ? 1 : 0,
             ]);
 

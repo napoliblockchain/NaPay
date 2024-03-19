@@ -46,46 +46,46 @@ $icon = [0 => 'icon fas fa-exclamation-triangle', 1 => 'icon fas fa-check'];
                 <div class="card-info card-outline info-box shadow-sm">
                     <div class="row">
                         <?php if (!User::isAdministrator()): ?>
-                        <div class="col-lg-12 col-sm-12">
-                            <p class="text-muted">
-                                <?= $form->field($model, 'privilege_id')->dropDownList(
-                                    $privilege_list,
-                                    ((User::can(40)) ? $disabled : ['disabled' => 'disabled'])
-                                )->label() ?>
-                            </p>
-                        </div>
-                        <div class="col-lg-12 col-sm-12">
-                            <p class="text-muted">
-                                <?= $form->field($model, 'merchant_id')->dropDownList(
-                                    $merchants_list,
-                                    [
-                                        'prompt' => Yii::t('app', 'Select Merchant'), 'id' => 'merchant_id'
-                                    ]
-                                ); ?>
-                                <?php echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->merchant_id, ['id' => 'selected_id']); ?>
+                            <div class="col-lg-12 col-sm-12">
+                                <p class="text-muted">
+                                    <?= $form->field($model, 'privilege_id')->dropDownList(
+                                        $privilege_list,
+                                        ((User::isAdministrator()) ? $disabled : ['disabled' => 'disabled'])
+                                    )->label() ?>
+                                </p>
+                            </div>
+                            <div class="col-lg-12 col-sm-12">
+                                <p class="text-muted">
+                                    <?= $form->field($model, 'merchant_id')->dropDownList(
+                                        $merchants_list,
+                                        [
+                                            'prompt' => Yii::t('app', 'Select Merchant'), 'id' => 'merchant_id'
+                                        ]
+                                    ); ?>
+                                    <?php echo Html::hiddenInput('selected_id', $model->isNewRecord ? '' : $model->merchant_id, ['id' => 'selected_id']); ?>
 
-                            </p>
-                        </div>
-                        <div class="col-lg-12 col-sm-12">
-                            <?php
-                            echo $form->field($model, 'store_id')->widget(DepDrop::class, [
-                                'options' => [
-                                    'id' => 'store_id',
-                                    'prompt' => Yii::t('app', 'Store'),
-                                ],
-                                'type' => DepDrop::TYPE_SELECT2,
-                                'select2Options' => ['pluginOptions' => ['allowClear' => true]],
-                                'pluginOptions' => [
-                                    'initialize' => $model->isNewRecord ? false : true,
-                                    'depends' => ['merchant_id'],
-                                    'placeholder' => Yii::t('app', 'Select Client'),
-                                    'url' => Url::to(['stores/lista-negozi', 'id' => $model->store_id ?? 0])
-                                    
-                                    ]
-                                    
-                                    ])->label('Negozio');
-                                    ?>
-                        </div>
+                                </p>
+                            </div>
+                            <div class="col-lg-12 col-sm-12">
+                                <?php
+                                // echo $form->field($model, 'store_id')->widget(DepDrop::class, [
+                                //     'options' => [
+                                //         'id' => 'store_id',
+                                //         'prompt' => Yii::t('app', 'Store'),
+                                //     ],
+                                //     'type' => DepDrop::TYPE_SELECT2,
+                                //     'select2Options' => ['pluginOptions' => ['allowClear' => true]],
+                                //     'pluginOptions' => [
+                                //         'initialize' => $model->isNewRecord ? false : true,
+                                //         'depends' => ['merchant_id'],
+                                //         'placeholder' => Yii::t('app', 'Select Client'),
+                                //         'url' => Url::to(['stores/lista-negozi', 'id' => $model->store_id ?? 0])
+                                        
+                                //         ]
+                                        
+                                //         ])->label('Negozio');
+                                        ?>
+                            </div>
                         <?php endif; ?>
                         <div class="col-lg-12 col-sm-12">
                             <?= $form->field($model, 'is_active', ['options' => ['class' => 'shadow p-2 mb-3']])->dropDownList(
@@ -97,8 +97,8 @@ $icon = [0 => 'icon fas fa-exclamation-triangle', 1 => 'icon fas fa-check'];
                         </div>
                         <div class="col-lg-12 col-sm-12">
                             <p class="ml-auto">
-                                <?php if (User::can(40) && $model->id != Yii::$app->user->id && Yii::$app->user->identity->privilege->level >= $model->privilege->level) : ?>
-                                    <?= Html::a(Yii::t('app', 'Confirm'), ['update', 'id' => Crypt::encrypt($model->id)], [
+                                <?php if (User::isAdministrator() && $model->id != Yii::$app->user->id && Yii::$app->user->identity->privilege->level >= $model->privilege->level) : ?>
+                                    <?= Html::a('<i class="fas fa-save"></i> ' . Yii::t('app', 'Confirm'), ['update', 'id' => Crypt::encrypt($model->id)], [
                                         'class' => 'btn btn-primary',
                                         'data' => [
                                             'confirm' => Yii::t('app', 'Are you sure you want to update user'),

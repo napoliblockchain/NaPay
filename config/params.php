@@ -7,9 +7,10 @@ return [
     /**
      * mailer 
      */
-    'adminEmail' => 'admin@example.com',
-    'senderEmail' => 'noreply@example.com',
-    'senderName' => 'Example.com mailer',
+    'adminName' => $secrets['adminName'],
+    'adminPhone' => $secrets['adminPhone'],
+    'adminEmail' => $secrets['adminEmail'],
+    'website' => $secrets['website'],
 
     /**
      * app settings
@@ -45,4 +46,12 @@ return [
      * generated from: https://randomkeygen.com/
      */
     'secret_hash_key' => $secrets['secret_hash_key'],
+
+
+    /**
+     * Set the nonce timeout for activate user
+     * 
+     * 48 ore per cliccare sul link di attivazione
+     */
+    'nonce.timeout' => 2 * 24 * 60 * 60,
 ];

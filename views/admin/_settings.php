@@ -8,7 +8,7 @@ use app\components\Crypt;
 <div class="card card-outline card-primary">
     <div class="card-header border-0">
         <h3 class="card-title">
-            <?= Html::a('<i class="fa fa-list"></i>', Url::to(['settings/index']), [
+            <?= Html::a('<i class="fa fa-sliders-h"></i>', Url::to(['settings/index']), [
                 'title' => Yii::t('app', 'Lista'),
                 'class' => 'btn btn-sm btn-default',
             ])  ?>

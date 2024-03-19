@@ -3,9 +3,9 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%np_users}}`.
+ * Handles the creation of table `{{%users}}`.
  */
-class m231113_093348_create_np_users_table extends Migration
+class m231113_093348_create_users_table extends Migration
 {
     public function safeUp()
     {

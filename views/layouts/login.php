@@ -76,7 +76,7 @@ ServiceWorkerAsset::register($this);
     </header>
 
     <main id="main" class="flex-shrink-0" role="main">
-        <div class="container overflow-y-scroll">
+        <div class="container">
             <?php if (!empty($this->params['breadcrumbs'])) : ?>
                 <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
             <?php endif ?>

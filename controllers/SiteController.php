@@ -13,6 +13,8 @@ use app\models\Users;
 use app\models\UserConsensus;
 
 use app\components\Log;
+use app\components\sendMail;
+use app\components\Crypt;
 
 use app\models\search\MerchantsSearch;
 use app\models\search\StoresSearch;
@@ -208,15 +210,6 @@ class SiteController extends Controller
             return $this->redirect(['site/index']);
         }
 
-        /** 
-         * verifico se esiste almeno 1 utente, nel caso lo rispedisco a login
-         */
-        // $test_user = Users::findOne(1);
-        /** TODO: RIMETTERE IL TEST PER NON PERMETTERE REGISTRAZIONE UTENTI */
-        // if (null !== $test_user) {
-        //     $this->redirect(['site/login']);
-        // }
-
         $this->layout = 'login';
 
         $model = new SignupForm();
@@ -233,9 +226,14 @@ class SiteController extends Controller
                 try {
                     if ($user = $model->signup()){
                         // echo "<pre>" . print_r($user->attributes, true) . "</pre>";exit;
-
                         $consensus->user_id = $user->id;
                         if ($consensus->save()){
+                            // invio la mail agli admins
+                            sendMail::toAdmins($user, 'newAccountAdmin', Yii::t('app', 'Nuovo account'));
+
+                            // invio la mail all'utente
+                            sendMail::toUser($user, 'newAccountUser', 'Nuovo account');
+
                             $transaction->commit();
 
                             Yii::$app->session->setFlash('success','Utente registrato con successo');
@@ -276,6 +274,69 @@ class SiteController extends Controller
             'model' => $model,
             'consensus' => $consensus,
         ]);
+    }
+
+
+    /**
+     * Activate registered user.
+     *
+     * @return Response|string
+     */
+    public function actionActivate($id, $sign)
+    {
+        $this->layout = 'login';
+
+        $id_decrypted = Crypt::sqlDecrypt($id);
+
+        // check if the message is outdated
+        $microtime = explode(' ', microtime());
+        $nonce = $microtime[1] . str_pad(substr($microtime[0], 2, 6), 6, '0');
+        $a = substr($nonce, 1, 9) * 1;
+
+        $user = Users::findOne(['id' => $id_decrypted]);
+        
+        if (null !== $user) {
+            $b = (int) substr($user->authKey, 1, 9) * 1;
+
+            $diff = $a - $b;
+
+            // echo "<pre>".print_r('a: ' .$a ,true)."</pre>";;
+            // echo "<pre>".print_r('b: ' .$b,true)."</pre>";;
+            // echo "<pre>" . print_r('diff: ' . $diff, true) . "</pre>";
+            // echo "<pre>" . print_r('timeout: ' . Yii::$app->params['nonce.timeout'], true) . "</pre>";
+            // exit;
+            if ($diff > Yii::$app->params['nonce.timeout']) {
+                // verifica che non sia attivo e lo cancella
+                if ($user->is_active == 0) {
+                    $user->delete();
+                    Yii::$app->session->setFlash('warning', Yii::t('app', '<strong>Error!</strong> The registration time has expired. You have to register again!'));
+                }
+            }
+            // Now do the sign
+            $signature = base64_encode(hash_hmac('sha512', hash('sha256', $user->authKey . $user->accessToken, true), base64_decode($user->authKey), true));
+
+            // compare the two signatures
+            if (strcmp($signature, $sign) == 0) {
+                // echo "<pre>".print_r('sono uguali',true)."</pre>";exit;
+                $user->authKey = \Yii::$app->security->generateRandomString();
+                $user->accessToken = \Yii::$app->security->generateRandomString();
+                $user->is_active = Users::STATUS_ACTIVE;
+                $user->save();
+                Yii::$app->session->setFlash('success', Yii::t('app', 'You have activated your account successfully.'));
+                // exit;
+            } else {
+                // echo "<pre>" . print_r('sono diversi', true) . "</pre>";
+                // echo "<pre>" . print_r('signature: ' . $signature, true) . "</pre>";
+                // echo "<pre>" . print_r('sign: ' . $sign, true) . "</pre>";
+                // exit;
+                $user->delete();
+                Yii::$app->session->setFlash('warning', Yii::t('app', '<strong>Error!</strong> The registration signature is wrong. You have to register again!'));
+            }
+        } else {
+            Yii::$app->session->setFlash('warning', Yii::t('app', '<strong>Error!</strong> Your account doesn\'t exist. You have to register again!'));
+        }
+
+        return $this->redirect(['site/index']);
     }
 
     

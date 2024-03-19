@@ -9,12 +9,16 @@ use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use yii\helpers\Url;
 use app\widgets\Alert;
+use app\assets\SignupAsset;
 
 $this->title = 'Registrazione';
 // $this->params['breadcrumbs'][] = $this->title;
+
+$isMerchant = ['Socio Ordinario', 'Socio Commerciante'];
+SignupAsset::register($this);
 ?>
 
-<div class="overflow-y-scroll site-login mt-4">
+<div class="site-login mt-4">
     <div class="row">
         <div class="col-lg-12">
             <div class="mt-4">
@@ -28,6 +32,14 @@ $this->title = 'Registrazione';
                             <div class="card-body login-card-body text-left" id="loginBody">
 
                                 <?php $form = ActiveForm::begin(['id' => 'signup-form']) ?>
+
+                                <?= $form->field($model, 'is_merchant')->dropDownList(
+                                    $isMerchant,
+                                    [
+                                        'prompt' => Yii::t('app', 'Seleziona il tipo di iscrizione'),
+                                        'id' => 'is_merchant',
+                                    ]
+                                )->label(false); ?>
 
                                 <?= $form->field($model, 'username', [
                                     'options' => ['class' => 'form-group has-feedback'],
@@ -95,12 +107,16 @@ $this->title = 'Registrazione';
 
                                 <!-- PRIVACY -->
                                 <div class="form-group">
-                                    <?= $form->field($consensus, 'consenso_privacy')->checkbox()->label('<i>&nbsp;Ho letto l\'<a href="' . Url::to(['site/printPrivacy']) . '" target="_blank">INFORMATIVA SULLA PRIVACY</a> e autorizzo al trattamento dei miei dati personali.</i>') ?>
+                                    <?= $form->field($consensus, 'consenso_privacy')->checkbox()->label('<i>&nbsp;Ho letto l\'<a href="' . Url::to(['site/print-privacy']) . '" target="_blank">INFORMATIVA SULLA PRIVACY</a> e autorizzo al trattamento dei miei dati personali.</i>') ?>
                                 </div>
 
                                 <!-- TERMINI -->
                                 <div class="input-group">
-                                    <?= $form->field($consensus, 'consenso_condizioni')->checkbox()->label('<i>&nbsp;Accetto le <a href="' . Url::to(['site/termOfUse']) . '" target="_blank">Condizioni di utilizzo</a> del software.</i>') ?>
+                                    <?= $form->field($consensus, 'consenso_condizioni')->checkbox()->label('<i>&nbsp;Accetto le <a href="' . Url::to(['site/term-of-use']) . '" target="_blank">Condizioni di utilizzo</a> del software.</i>') ?>
+                                </div>
+
+                                <div class="input-group" id="termini_pos" style="display: none;">
+                                    <?= $form->field($consensus, 'consenso_condizioni_pos')->checkbox()->label('<i>&nbsp;Accetto i <a href="' . Url::to(['site/term-of-use-pos']) . '" target="_blank">Termini e le Condizioni di utilizzo</a> del POS.</i>') ?>
                                 </div>
 
                                 <!-- TERMINI -->

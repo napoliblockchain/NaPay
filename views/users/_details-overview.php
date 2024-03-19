@@ -36,19 +36,19 @@ use app\components\User;
             'format' => 'raw',
         ],
 
-        [
-            'attribute' => 'merchant_id',
-            'value' => Html::encode($model->merchant->description ?? null),
-            'format' => 'raw',
-            'visible' => (User::privilegeLevel($model->id) < 40) ? true : false,
-        ],
+        // [
+        //     'attribute' => 'merchant_id',
+        //     'value' => Html::encode($model->merchant->description ?? null),
+        //     'format' => 'raw',
+        //     'visible' => (User::privilegeLevel($model->id) < 40) ? true : false,
+        // ],
 
-        [
-            'attribute' => 'store_id',
-            'value' => Html::encode($model->store->description ?? null),
-            'format' => 'raw',
-            'visible' => (User::privilegeLevel($model->id) < 40) ? true : false,
-        ],
+        // [
+        //     'attribute' => 'store_id',
+        //     'value' => Html::encode($model->store->description ?? null),
+        //     'format' => 'raw',
+        //     'visible' => (User::privilegeLevel($model->id) < 40) ? true : false,
+        // ],
        
         [
             'attribute' => 'privilege_id',

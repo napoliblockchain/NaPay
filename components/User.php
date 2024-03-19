@@ -19,6 +19,16 @@ class User extends Component
     const ROLE_MERCHANT = 30;
     const ROLE_USER = 0;
     
+    /**
+     * Restituisce tutti i model degli amministratori
+     */
+    public static function getAdmins()
+    {
+        return Users::find()
+            ->joinWith(['privilege'])
+            ->andWhere(['privileges.codice_ruolo' => 'ROLE_ADMIN'])
+            ->all();
+    }
     
     /**
      * Verifica se un utente può fare qualcosa in base al level

@@ -9,12 +9,17 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\forms\LoginForm;
 use app\models\forms\SignupForm;
+use app\models\forms\PasswordResetRequestForm;
+use app\models\forms\ResetPasswordForm;
 use app\models\Users;
 use app\models\UserConsensus;
 
 use app\components\Log;
 use app\components\sendMail;
 use app\components\Crypt;
+
+use yii\web\BadRequestHttpException;
+use yii\base\InvalidArgumentException;
 
 use app\models\search\MerchantsSearch;
 use app\models\search\StoresSearch;
@@ -236,6 +241,13 @@ class SiteController extends Controller
 
                             $transaction->commit();
 
+                            // Log message
+                            $message_log = Yii::t('app', 'User {user} has signup succesfully.', [
+                                'user' => $user->username,
+                            ]);
+                            Log::save(Yii::$app->controller->id, (Yii::$app->controller->action->id), $message_log);
+                            // end log message
+
                             Yii::$app->session->setFlash('success','Utente registrato con successo');
                             return $this->redirect(['site/index']);
                         } else {
@@ -322,6 +334,14 @@ class SiteController extends Controller
                 $user->accessToken = \Yii::$app->security->generateRandomString();
                 $user->is_active = Users::STATUS_ACTIVE;
                 $user->save();
+
+                // Log message
+                $message_log = Yii::t('app', 'User {user} has activated the account succesfully.', [
+                    'user' => $user->username,
+                ]);
+                Log::save(Yii::$app->controller->id, (Yii::$app->controller->action->id), $message_log);
+                // end log message
+
                 Yii::$app->session->setFlash('success', Yii::t('app', 'You have activated your account successfully.'));
                 // exit;
             } else {
@@ -337,6 +357,66 @@ class SiteController extends Controller
         }
 
         return $this->redirect(['site/index']);
+    }
+
+    /**
+     * Requests password reset.
+     *
+     * @return mixed
+     */
+    public function actionForgotPassword()
+    {
+        $this->layout = 'login';
+
+        $model = new PasswordResetRequestForm();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            
+            $model->sendEmail();
+
+            // Log message
+            $message_log = Yii::t('app', 'User {user} has requested a password reset.', [
+                'user' => $model->email,
+            ]);
+            Log::save(Yii::$app->controller->id, (Yii::$app->controller->action->id), $message_log);
+            // end log message
+            
+            Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+            return $this->redirect(['/site/login']);
+        }
+
+        return $this->render('requestPasswordReset', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * Resets password.
+     *
+     * @param string $token
+     * @return mixed
+     * @throws BadRequestHttpException
+     */
+    public function actionResetPassword($token)
+    {
+        $this->layout = 'login';
+
+        try {
+            $model = new ResetPasswordForm($token);
+        } catch (InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
+
+            $model->sendEmail();
+
+            Yii::$app->session->setFlash('success', Yii::t('app', 'New password saved.'));
+            return $this->redirect(['/site/login']);
+        }
+
+        return $this->render('resetPassword', [
+            'model' => $model,
+        ]);
     }
 
     

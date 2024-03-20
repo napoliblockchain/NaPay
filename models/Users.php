@@ -18,6 +18,7 @@ use yii\helpers\ArrayHelper;
  * @property string $oauth_uid
  * @property string $authKey
  * @property string $accessToken
+ * @property string|null $activationCode
  * @property string $picture
  * @property int $privilege_id
  * @property int $is_active
@@ -56,6 +57,8 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             [['oauth_uid'], 'string', 'max' => 128],
             [['accessToken'], 'string', 'max' => 2048],
             [['picture'], 'string', 'max' => 512],
+            [['activationCode'], 'string', 'max' => 256],
+
             [['privilege_id'], 'exist', 'skipOnError' => true, 'targetClass' => Privileges::class, 'targetAttribute' => ['privilege_id' => 'id']],
         ];
     }
@@ -75,20 +78,14 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'oauth_uid' => Yii::t('app', 'OAuth ID'),
             'authKey' => Yii::t('app', 'Auth Key'),
             'accessToken' => Yii::t('app', 'Access Token'),
+            'activationCode' => Yii::t('app', 'Activation Code'),
             'picture' => Yii::t('app', 'Picture'),
             'privilege_id' => Yii::t('app', 'Profilo'),
             'is_active' => Yii::t('app', 'Abilitato'),
         ];
     }
 
-    /**
-     * chiede l'auth  e restituisce User altrimenti false
-     */
-    public static function doAuth($username, $password, $otpCode)
-    {
-        
-    }
-
+   
     /**
      * Gets query for [[Auths]].
      *
@@ -225,7 +222,75 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
      */
     public function validatePassword($password)
     {
-
         return Yii::$app->getSecurity()->validatePassword($password, $this->password);
     }
+
+
+    // ------------------------------------------------------------  * 
+    // Start reset password functions
+
+    /**
+     * Finds out if password reset token is valid
+     *
+     * @param string $token password reset token
+     * @return bool
+     */
+    public static function isPasswordResetTokenValid($token)
+    {
+        if (empty($token)) {
+            return false;
+        }
+
+        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
+        return $timestamp + $expire >= time();
+    }
+
+    /**
+     * Generates new password reset token
+     */
+    public function generatePasswordResetToken()
+    {
+        $this->activationCode = Yii::$app->security->generateRandomString() . '_' . time();
+    }
+
+    /**
+     * Finds user by password reset token
+     *
+     * @param string $token password reset token
+     * @return static|null
+     */
+    public static function findByPasswordResetToken($token)
+    {
+        if (!static::isPasswordResetTokenValid($token)) {
+            return null;
+        }
+
+        return static::findOne([
+            'activationCode' => $token,
+            'is_active' => self::STATUS_ACTIVE,
+        ]);
+    }
+
+    /**
+     * Generates password hash from password and sets it to the model
+     *
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = \Yii::$app->getSecurity()->generatePasswordHash($password);
+    }
+
+    /**
+     * Removes password reset token
+     */
+    public function removePasswordResetToken()
+    {
+        $this->activationCode = null;
+    }
+
+
+    // END reset password functions
+    // ------------------------------------------------------------  * 
 }

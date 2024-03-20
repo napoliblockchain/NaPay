@@ -81,7 +81,7 @@ $URL = Url::toRoute(['site/activate', 'id' => Crypt::sqlEncrypt($user->id), 'sig
         <p class="salutation">Ciao <?php echo ucfirst($user->first_name) ?? $user->username; ?>,</p>
         <p>qualcuno ha richiesto di registrare un nuovo account. Ti invitiamo a collegarti all'indirizzo fornito di seguito.</p>
 
-        <p><b>Se non hai richiesto questa registrazione, ignora semplicemente questa email.</b></p>
+        <p><b>Se non sei stato tu ad effettuare questa richiesta, ignora semplicemente questa email oppure contatta un amministratore.</b></p>
 
         <div style="margin-top: 20px;">
             <a href="<?php echo $URL; ?>">

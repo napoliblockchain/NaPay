@@ -18,7 +18,7 @@ class UsersSearch extends Users
     {
         return [
             [['id', 'privilege_id', 'is_active',], 'integer'],
-            [['username', 'email', 'first_name', 'last_name', 'oauth_provider', 'oauth_uid', 'authKey', 'accessToken', 'picture'], 'safe'],
+            [['username', 'email', 'first_name', 'last_name', 'oauth_provider', 'oauth_uid', 'authKey', 'accessToken', 'activationCode', 'picture'], 'safe'],
         ];
     }
 
@@ -71,6 +71,7 @@ class UsersSearch extends Users
             ->andFilterWhere(['like', 'oauth_uid', $this->oauth_uid])
             ->andFilterWhere(['like', 'authKey', $this->authKey])
             ->andFilterWhere(['like', 'accessToken', $this->accessToken])
+            ->andFilterWhere(['like', 'activationCode', $this->activationCode])
             ->andFilterWhere(['like', 'picture', $this->picture]);
 
         return $dataProvider;

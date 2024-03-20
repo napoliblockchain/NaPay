@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Url;
+
 $URL = Url::to(['site/login'], true);
 ?>
 
@@ -9,7 +10,8 @@ $URL = Url::to(['site/login'], true);
         font-family: Arial, sans-serif;
     }
 
-    p, button {
+    p,
+    button {
         font-family: Georgia, serif;
     }
 
@@ -76,7 +78,7 @@ $URL = Url::to(['site/login'], true);
         <p class="salutation">Ciao <?php echo ucfirst($user->first_name) ?? $user->username; ?>,</p>
         <p>hai completato il processo di ripristino della password.</p>
 
-        <p><b>Se non hai effettuato tu la richiesta, ignora semplicemente questa email.</b></p>
+        <p><b>Se non sei stato tu ad effettuare questa richiesta, contatta subito un amministratore.</b></p>
 
         <div style="margin-top: 20px;">
             <a href="<?php echo $URL; ?>">

@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Url;
-$URL = Url::to(['site/forgot-password'], true);
+
+$URL = Url::to(['site/reset-password', 'token' => $user->activationCode], true);
 ?>
 
 <style>
@@ -9,7 +10,8 @@ $URL = Url::to(['site/forgot-password'], true);
         font-family: Arial, sans-serif;
     }
 
-    p, button {
+    p,
+    button {
         font-family: Georgia, serif;
     }
 
@@ -66,7 +68,7 @@ $URL = Url::to(['site/forgot-password'], true);
 
 <div class="card">
     <div class="card-header">
-        <img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/landing-page/assets/img/logo.jpg" alt="Logo">
+        <img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/bundles/site/images/logo-60.png" alt="Logo">
         <span><?= Yii::$app->name; ?></span>
     </div>
     <div class="card-title">
@@ -74,9 +76,9 @@ $URL = Url::to(['site/forgot-password'], true);
     </div>
     <div class="card-content">
         <p class="salutation">Ciao <?php echo ucfirst($user->first_name) ?? $user->username; ?>,</p>
-        <p>qualcuno ha richiesto la reimpostazione password del tuo account. Ti invitiamo a collegarti all'indirizzo fornito di seguito per concludere il processo di ripristino.</p>
+        <p>qualcuno ha richiesto la reimpostazione password del tuo account. Hai tempo 60 minuti per collegarti all'indirizzo fornito di seguito e concludere il processo di ripristino.</p>
 
-        <p><b>Se non hai richiesto questa registrazione, ignora semplicemente questa email.</b></p>
+        <p><b>Se non sei stato tu ad effettuare questa richiesta, ignora semplicemente questa email oppure contatta un amministratore.</b></p>
 
         <div style="margin-top: 20px;">
             <a href="<?php echo $URL; ?>">
@@ -123,5 +125,5 @@ $URL = Url::to(['site/forgot-password'], true);
 </div>
 
 <?php
-// exit;
+//  exit;
 ?>

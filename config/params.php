@@ -29,11 +29,11 @@ return [
     'webapp_society' => $secrets['webapp_society'],
     'webapp_link' => $secrets['webapp_link'],
 
-    
     /**
      * Set the password reset token expiration time.
      */
-    'user.passwordResetTokenExpire' => 24 * 60 * 60,
+    'user.passwordResetTokenExpire' => 60 * 60, // 1 ora
+    'user.authTimeout' => 30 * 24 * 60 * 60, // 30 giorni
     'user.passwordMinLength' => 8,
 
     /**

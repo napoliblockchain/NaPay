@@ -27,6 +27,7 @@ class m231113_093348_create_users_table extends Migration
                 'oauth_uid' => $this->string(128)->notNull(),
                 'authKey' => $this->string(256)->notNull(),
                 'accessToken' => $this->string(2048)->notNull(),
+                'activationCode' => $this->string(256)->defaultValue(NULL),
                 'picture' => $this->string(512)->notNull(),
                 'privilege_id' => $this->integer()->notNull(),
                 'is_merchant' => $this->integer()->defaultValue(0),
